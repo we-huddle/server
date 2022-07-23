@@ -46,7 +46,7 @@ jooq {
                         inputSchema = "public"
                     }
                     target.apply {
-                        packageName = "no.comunin.db"
+                        packageName = "no.wehuddle.db"
                         directory = databaseCodeGenerationDir
                     }
                     generate.isNullableAnnotation = true
@@ -63,6 +63,7 @@ dependencies {
     implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("org.flywaydb:flyway-core:8.5.12")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.jooq:jooq:3.16.6")
     jooqGenerator("org.postgresql:postgresql:42.3.6")

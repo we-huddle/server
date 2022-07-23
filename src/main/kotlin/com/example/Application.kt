@@ -1,16 +1,15 @@
 package com.example
 
-import com.example.plugins.configureHTTP
-import com.example.plugins.configureHikariDataSource
-import com.example.plugins.configureRouting
-import com.example.plugins.configureSecurity
+import com.example.plugins.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+        val datasource = configureHikariDataSource()
+        performDBMigration(datasource)
         configureSecurity()
         configureHTTP()
-        configureRouting(configureHikariDataSource())
+        configureRouting(datasource)
     }.start(wait = true)
 }
