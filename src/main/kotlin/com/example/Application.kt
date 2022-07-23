@@ -1,13 +1,16 @@
 package com.example
 
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import com.example.plugins.*
+import com.example.plugins.configureHTTP
+import com.example.plugins.configureHikariDataSource
+import com.example.plugins.configureRouting
+import com.example.plugins.configureSecurity
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
         configureSecurity()
         configureHTTP()
-        configureRouting()
+        configureRouting(configureHikariDataSource())
     }.start(wait = true)
 }
