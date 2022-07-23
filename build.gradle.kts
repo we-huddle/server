@@ -46,7 +46,7 @@ jooq {
                         inputSchema = "public"
                     }
                     target.apply {
-                        packageName = "no.wehuddle.db"
+                        packageName = "com.wehuddle.db"
                         directory = databaseCodeGenerationDir
                     }
                     generate.isNullableAnnotation = true
