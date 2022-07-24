@@ -11,8 +11,6 @@ import com.wehuddle.db.tables.Session;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
@@ -55,13 +53,11 @@ public class Public extends SchemaImpl {
 
 
     @Override
-    @Nonnull
     public Catalog getCatalog() {
         return DefaultCatalog.DEFAULT_CATALOG;
     }
 
     @Override
-    @Nonnull
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,

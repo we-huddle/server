@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
@@ -47,7 +45,6 @@ public class Session extends TableImpl<SessionRecord> {
      * The class holding records for this type
      */
     @Override
-    @Nonnull
     public Class<SessionRecord> getRecordType() {
         return SessionRecord.class;
     }
@@ -111,25 +108,21 @@ public class Session extends TableImpl<SessionRecord> {
     }
 
     @Override
-    @Nonnull
     public Schema getSchema() {
         return Public.PUBLIC;
     }
 
     @Override
-    @Nonnull
     public UniqueKey<SessionRecord> getPrimaryKey() {
         return Keys.SESSION_PKEY;
     }
 
     @Override
-    @Nonnull
     public List<UniqueKey<SessionRecord>> getKeys() {
         return Arrays.<UniqueKey<SessionRecord>>asList(Keys.SESSION_PKEY);
     }
 
     @Override
-    @Nonnull
     public List<ForeignKey<SessionRecord, ?>> getReferences() {
         return Arrays.<ForeignKey<SessionRecord, ?>>asList(Keys.SESSION__SESSION_PROFILE_ID_FKEY);
     }
@@ -139,13 +132,11 @@ public class Session extends TableImpl<SessionRecord> {
     }
 
     @Override
-    @Nonnull
     public Session as(String alias) {
         return new Session(DSL.name(alias), this);
     }
 
     @Override
-    @Nonnull
     public Session as(Name alias) {
         return new Session(alias, this);
     }
@@ -154,7 +145,6 @@ public class Session extends TableImpl<SessionRecord> {
      * Rename this table
      */
     @Override
-    @Nonnull
     public Session rename(String name) {
         return new Session(DSL.name(name), null);
     }
@@ -163,7 +153,6 @@ public class Session extends TableImpl<SessionRecord> {
      * Rename this table
      */
     @Override
-    @Nonnull
     public Session rename(Name name) {
         return new Session(name, null);
     }
@@ -173,7 +162,6 @@ public class Session extends TableImpl<SessionRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    @Nonnull
     public Row5<UUID, UUID, OffsetDateTime, OffsetDateTime, OffsetDateTime> fieldsRow() {
         return (Row5) super.fieldsRow();
     }

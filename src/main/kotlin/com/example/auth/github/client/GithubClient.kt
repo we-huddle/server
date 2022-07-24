@@ -7,13 +7,13 @@ class GithubClient(
 ) {
     fun getAuthUrl(): String {
         val authUrl = StringBuilder("https://github.com/login/oauth/authorize?scope=user:email")
-        authUrl.append("client_id=")
+        authUrl.append("&client_id=")
         authUrl.append(clientId)
         return authUrl.toString()
     }
 
     // TODO: Implement a exception handler for rest calls
-    fun getAccessToken(code: String): String {
+    fun getAccessToken(code: String): AccessTokenPayload {
         val payload = GetAccessTokenBodyDto(
             clientId,
             clientSecret,
@@ -21,6 +21,7 @@ class GithubClient(
         )
         return githubService.getAccessToken(
             url = "https://github.com/login/oauth/access_token",
+            acceptHeader = "application/json",
             body = payload
         ).execute().let {
             if (it.isSuccessful) {

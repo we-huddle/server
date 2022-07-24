@@ -9,8 +9,6 @@ import com.wehuddle.db.tables.Session;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record5;
@@ -29,14 +27,13 @@ public class SessionRecord extends UpdatableRecordImpl<SessionRecord> implements
     /**
      * Setter for <code>public.session.id</code>.
      */
-    public void setId(@Nonnull UUID value) {
+    public void setId(UUID value) {
         set(0, value);
     }
 
     /**
      * Getter for <code>public.session.id</code>.
      */
-    @Nonnull
     public UUID getId() {
         return (UUID) get(0);
     }
@@ -44,14 +41,13 @@ public class SessionRecord extends UpdatableRecordImpl<SessionRecord> implements
     /**
      * Setter for <code>public.session.profile_id</code>.
      */
-    public void setProfileId(@Nonnull UUID value) {
+    public void setProfileId(UUID value) {
         set(1, value);
     }
 
     /**
      * Getter for <code>public.session.profile_id</code>.
      */
-    @Nonnull
     public UUID getProfileId() {
         return (UUID) get(1);
     }
@@ -59,14 +55,13 @@ public class SessionRecord extends UpdatableRecordImpl<SessionRecord> implements
     /**
      * Setter for <code>public.session.expires_at</code>.
      */
-    public void setExpiresAt(@Nonnull OffsetDateTime value) {
+    public void setExpiresAt(OffsetDateTime value) {
         set(2, value);
     }
 
     /**
      * Getter for <code>public.session.expires_at</code>.
      */
-    @Nonnull
     public OffsetDateTime getExpiresAt() {
         return (OffsetDateTime) get(2);
     }
@@ -74,14 +69,13 @@ public class SessionRecord extends UpdatableRecordImpl<SessionRecord> implements
     /**
      * Setter for <code>public.session.created_at</code>.
      */
-    public void setCreatedAt(@Nonnull OffsetDateTime value) {
+    public void setCreatedAt(OffsetDateTime value) {
         set(3, value);
     }
 
     /**
      * Getter for <code>public.session.created_at</code>.
      */
-    @Nonnull
     public OffsetDateTime getCreatedAt() {
         return (OffsetDateTime) get(3);
     }
@@ -89,14 +83,13 @@ public class SessionRecord extends UpdatableRecordImpl<SessionRecord> implements
     /**
      * Setter for <code>public.session.updated_at</code>.
      */
-    public void setUpdatedAt(@Nonnull OffsetDateTime value) {
+    public void setUpdatedAt(OffsetDateTime value) {
         set(4, value);
     }
 
     /**
      * Getter for <code>public.session.updated_at</code>.
      */
-    @Nonnull
     public OffsetDateTime getUpdatedAt() {
         return (OffsetDateTime) get(4);
     }
@@ -106,7 +99,6 @@ public class SessionRecord extends UpdatableRecordImpl<SessionRecord> implements
     // -------------------------------------------------------------------------
 
     @Override
-    @Nonnull
     public Record1<UUID> key() {
         return (Record1) super.key();
     }
@@ -116,145 +108,122 @@ public class SessionRecord extends UpdatableRecordImpl<SessionRecord> implements
     // -------------------------------------------------------------------------
 
     @Override
-    @Nonnull
     public Row5<UUID, UUID, OffsetDateTime, OffsetDateTime, OffsetDateTime> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 
     @Override
-    @Nonnull
     public Row5<UUID, UUID, OffsetDateTime, OffsetDateTime, OffsetDateTime> valuesRow() {
         return (Row5) super.valuesRow();
     }
 
     @Override
-    @Nonnull
     public Field<UUID> field1() {
         return Session.SESSION.ID;
     }
 
     @Override
-    @Nonnull
     public Field<UUID> field2() {
         return Session.SESSION.PROFILE_ID;
     }
 
     @Override
-    @Nonnull
     public Field<OffsetDateTime> field3() {
         return Session.SESSION.EXPIRES_AT;
     }
 
     @Override
-    @Nonnull
     public Field<OffsetDateTime> field4() {
         return Session.SESSION.CREATED_AT;
     }
 
     @Override
-    @Nonnull
     public Field<OffsetDateTime> field5() {
         return Session.SESSION.UPDATED_AT;
     }
 
     @Override
-    @Nonnull
     public UUID component1() {
         return getId();
     }
 
     @Override
-    @Nonnull
     public UUID component2() {
         return getProfileId();
     }
 
     @Override
-    @Nonnull
     public OffsetDateTime component3() {
         return getExpiresAt();
     }
 
     @Override
-    @Nonnull
     public OffsetDateTime component4() {
         return getCreatedAt();
     }
 
     @Override
-    @Nonnull
     public OffsetDateTime component5() {
         return getUpdatedAt();
     }
 
     @Override
-    @Nonnull
     public UUID value1() {
         return getId();
     }
 
     @Override
-    @Nonnull
     public UUID value2() {
         return getProfileId();
     }
 
     @Override
-    @Nonnull
     public OffsetDateTime value3() {
         return getExpiresAt();
     }
 
     @Override
-    @Nonnull
     public OffsetDateTime value4() {
         return getCreatedAt();
     }
 
     @Override
-    @Nonnull
     public OffsetDateTime value5() {
         return getUpdatedAt();
     }
 
     @Override
-    @Nonnull
-    public SessionRecord value1(@Nonnull UUID value) {
+    public SessionRecord value1(UUID value) {
         setId(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public SessionRecord value2(@Nonnull UUID value) {
+    public SessionRecord value2(UUID value) {
         setProfileId(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public SessionRecord value3(@Nonnull OffsetDateTime value) {
+    public SessionRecord value3(OffsetDateTime value) {
         setExpiresAt(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public SessionRecord value4(@Nonnull OffsetDateTime value) {
+    public SessionRecord value4(OffsetDateTime value) {
         setCreatedAt(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public SessionRecord value5(@Nonnull OffsetDateTime value) {
+    public SessionRecord value5(OffsetDateTime value) {
         setUpdatedAt(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public SessionRecord values(@Nonnull UUID value1, @Nonnull UUID value2, @Nonnull OffsetDateTime value3, @Nonnull OffsetDateTime value4, @Nonnull OffsetDateTime value5) {
+    public SessionRecord values(UUID value1, UUID value2, OffsetDateTime value3, OffsetDateTime value4, OffsetDateTime value5) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -277,7 +246,7 @@ public class SessionRecord extends UpdatableRecordImpl<SessionRecord> implements
     /**
      * Create a detached, initialised SessionRecord
      */
-    public SessionRecord(@Nonnull UUID id, @Nonnull UUID profileId, @Nonnull OffsetDateTime expiresAt, @Nonnull OffsetDateTime createdAt, @Nonnull OffsetDateTime updatedAt) {
+    public SessionRecord(UUID id, UUID profileId, OffsetDateTime expiresAt, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
         super(Session.SESSION);
 
         setId(id);

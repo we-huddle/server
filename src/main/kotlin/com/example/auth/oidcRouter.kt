@@ -1,6 +1,7 @@
 package com.example.auth
 
 import com.example.auth.github.client.GithubClient
+import com.wehuddle.db.enums.UserRole
 import com.wehuddle.db.tables.Profile
 import com.wehuddle.db.tables.Session
 import io.ktor.server.application.call
@@ -16,11 +17,9 @@ private val PROFILE = Profile.PROFILE
 private val SESSION = Session.SESSION
 private const val SESSION_VALIDITY_DAYS = 7L
 
-fun Route.oidc(context: DSLContext, githubClient: GithubClient) {
+fun Route.oidc(context: DSLContext, githubClient: GithubClient, clientUrl: String) {
     route("/authorize") {
         get {
-            println("=================")
-            println(call.request.origin.uri)
             call.respondRedirect(githubClient.getAuthUrl())
         }
     }
@@ -28,16 +27,17 @@ fun Route.oidc(context: DSLContext, githubClient: GithubClient) {
     route("/callback") {
         get {
             val code = call.request.queryParameters["code"]!!
-            val accessToken = githubClient.getAccessToken(code)
+            val accessToken = githubClient.getAccessToken(code).accessToken
             val userInfo = githubClient.getUserInfo(accessToken)
             val emailAddressList = githubClient.getEmailAddresses(accessToken)
             var existingProfile = context.fetchOne(PROFILE.where(PROFILE.GITHUB_UNIQUE_ID.eq(userInfo.id.toString())))
             if (existingProfile == null) {
                 val newProfile = context.newRecord(PROFILE)
                 newProfile.name = userInfo.name
+                newProfile.role = UserRole.HUDDLER
                 newProfile.githubUsername = userInfo.login
                 newProfile.githubUniqueId = userInfo.id.toString()
-                newProfile.photo = userInfo.avatar_url
+                newProfile.photo = userInfo.avatarUrl
                 newProfile.accessToken = accessToken
                 newProfile.email = emailAddressList.first { it.primary }.email
                 newProfile.store()
@@ -47,6 +47,7 @@ fun Route.oidc(context: DSLContext, githubClient: GithubClient) {
             session.profileId = existingProfile.id
             session.expiresAt = OffsetDateTime.now().plusDays(SESSION_VALIDITY_DAYS)
             session.store()
+            call.respondRedirect("$clientUrl/login/success?session=${session.id}")
         }
     }
 }

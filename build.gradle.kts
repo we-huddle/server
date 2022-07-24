@@ -49,8 +49,8 @@ jooq {
                         packageName = "com.wehuddle.db"
                         directory = databaseCodeGenerationDir
                     }
-                    generate.isNullableAnnotation = true
-                    generate.isNonnullAnnotation = true
+                    generate.isNullableAnnotation = false
+                    generate.isNonnullAnnotation = false
                 }
             }
         }
@@ -73,11 +73,10 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
     implementation("org.flywaydb:flyway-core:8.5.12")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.jooq:jooq:3.16.6")
-    implementation("javax.annotation:javax.annotation-api:1.3.2")
-    implementation("javax.servlet:javax.servlet-api:4.0.1")
     jooqGenerator("org.postgresql:postgresql:42.3.6")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")

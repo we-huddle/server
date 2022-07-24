@@ -14,8 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
@@ -48,7 +46,6 @@ public class Profile extends TableImpl<ProfileRecord> {
      * The class holding records for this type
      */
     @Override
-    @Nonnull
     public Class<ProfileRecord> getRecordType() {
         return ProfileRecord.class;
     }
@@ -137,31 +134,26 @@ public class Profile extends TableImpl<ProfileRecord> {
     }
 
     @Override
-    @Nonnull
     public Schema getSchema() {
         return Public.PUBLIC;
     }
 
     @Override
-    @Nonnull
     public UniqueKey<ProfileRecord> getPrimaryKey() {
         return Keys.PROFILE_PKEY;
     }
 
     @Override
-    @Nonnull
     public List<UniqueKey<ProfileRecord>> getKeys() {
         return Arrays.<UniqueKey<ProfileRecord>>asList(Keys.PROFILE_PKEY);
     }
 
     @Override
-    @Nonnull
     public Profile as(String alias) {
         return new Profile(DSL.name(alias), this);
     }
 
     @Override
-    @Nonnull
     public Profile as(Name alias) {
         return new Profile(alias, this);
     }
@@ -170,7 +162,6 @@ public class Profile extends TableImpl<ProfileRecord> {
      * Rename this table
      */
     @Override
-    @Nonnull
     public Profile rename(String name) {
         return new Profile(DSL.name(name), null);
     }
@@ -179,7 +170,6 @@ public class Profile extends TableImpl<ProfileRecord> {
      * Rename this table
      */
     @Override
-    @Nonnull
     public Profile rename(Name name) {
         return new Profile(name, null);
     }
@@ -189,7 +179,6 @@ public class Profile extends TableImpl<ProfileRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    @Nonnull
     public Row10<UUID, String, String, String, String, String, String, UserRole, OffsetDateTime, OffsetDateTime> fieldsRow() {
         return (Row10) super.fieldsRow();
     }

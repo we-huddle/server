@@ -7,8 +7,6 @@ package com.wehuddle.db;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
 import org.jooq.Schema;
 import org.jooq.impl.CatalogImpl;
 
@@ -39,7 +37,6 @@ public class DefaultCatalog extends CatalogImpl {
     }
 
     @Override
-    @Nonnull
     public final List<Schema> getSchemas() {
         return Arrays.<Schema>asList(
             Public.PUBLIC);

@@ -9,8 +9,9 @@ import org.jooq.DSLContext
 fun Application.configureRouting(
     context: DSLContext? = null,
     githubClient: GithubClient? = null,
+    clientUrl: String? = null
 ) {
     routing {
-        oidc(context!!, githubClient!!)
+        oidc(context!!, githubClient!!, clientUrl!!)
     }
 }

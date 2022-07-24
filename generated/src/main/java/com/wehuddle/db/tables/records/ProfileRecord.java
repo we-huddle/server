@@ -10,8 +10,6 @@ import com.wehuddle.db.tables.Profile;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record10;
@@ -30,14 +28,13 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Setter for <code>public.profile.id</code>.
      */
-    public void setId(@Nonnull UUID value) {
+    public void setId(UUID value) {
         set(0, value);
     }
 
     /**
      * Getter for <code>public.profile.id</code>.
      */
-    @Nonnull
     public UUID getId() {
         return (UUID) get(0);
     }
@@ -45,14 +42,13 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Setter for <code>public.profile.name</code>.
      */
-    public void setName(@Nonnull String value) {
+    public void setName(String value) {
         set(1, value);
     }
 
     /**
      * Getter for <code>public.profile.name</code>.
      */
-    @Nonnull
     public String getName() {
         return (String) get(1);
     }
@@ -60,14 +56,13 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Setter for <code>public.profile.github_username</code>.
      */
-    public void setGithubUsername(@Nonnull String value) {
+    public void setGithubUsername(String value) {
         set(2, value);
     }
 
     /**
      * Getter for <code>public.profile.github_username</code>.
      */
-    @Nonnull
     public String getGithubUsername() {
         return (String) get(2);
     }
@@ -75,14 +70,13 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Setter for <code>public.profile.email</code>.
      */
-    public void setEmail(@Nonnull String value) {
+    public void setEmail(String value) {
         set(3, value);
     }
 
     /**
      * Getter for <code>public.profile.email</code>.
      */
-    @Nonnull
     public String getEmail() {
         return (String) get(3);
     }
@@ -90,14 +84,13 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Setter for <code>public.profile.photo</code>.
      */
-    public void setPhoto(@Nonnull String value) {
+    public void setPhoto(String value) {
         set(4, value);
     }
 
     /**
      * Getter for <code>public.profile.photo</code>.
      */
-    @Nonnull
     public String getPhoto() {
         return (String) get(4);
     }
@@ -105,14 +98,13 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Setter for <code>public.profile.github_unique_id</code>.
      */
-    public void setGithubUniqueId(@Nonnull String value) {
+    public void setGithubUniqueId(String value) {
         set(5, value);
     }
 
     /**
      * Getter for <code>public.profile.github_unique_id</code>.
      */
-    @Nonnull
     public String getGithubUniqueId() {
         return (String) get(5);
     }
@@ -120,14 +112,13 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Setter for <code>public.profile.access_token</code>.
      */
-    public void setAccessToken(@Nonnull String value) {
+    public void setAccessToken(String value) {
         set(6, value);
     }
 
     /**
      * Getter for <code>public.profile.access_token</code>.
      */
-    @Nonnull
     public String getAccessToken() {
         return (String) get(6);
     }
@@ -135,14 +126,13 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Setter for <code>public.profile.role</code>.
      */
-    public void setRole(@Nonnull UserRole value) {
+    public void setRole(UserRole value) {
         set(7, value);
     }
 
     /**
      * Getter for <code>public.profile.role</code>.
      */
-    @Nonnull
     public UserRole getRole() {
         return (UserRole) get(7);
     }
@@ -150,14 +140,13 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Setter for <code>public.profile.created_at</code>.
      */
-    public void setCreatedAt(@Nonnull OffsetDateTime value) {
+    public void setCreatedAt(OffsetDateTime value) {
         set(8, value);
     }
 
     /**
      * Getter for <code>public.profile.created_at</code>.
      */
-    @Nonnull
     public OffsetDateTime getCreatedAt() {
         return (OffsetDateTime) get(8);
     }
@@ -165,14 +154,13 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Setter for <code>public.profile.updated_at</code>.
      */
-    public void setUpdatedAt(@Nonnull OffsetDateTime value) {
+    public void setUpdatedAt(OffsetDateTime value) {
         set(9, value);
     }
 
     /**
      * Getter for <code>public.profile.updated_at</code>.
      */
-    @Nonnull
     public OffsetDateTime getUpdatedAt() {
         return (OffsetDateTime) get(9);
     }
@@ -182,7 +170,6 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     // -------------------------------------------------------------------------
 
     @Override
-    @Nonnull
     public Record1<UUID> key() {
         return (Record1) super.key();
     }
@@ -192,270 +179,227 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     // -------------------------------------------------------------------------
 
     @Override
-    @Nonnull
     public Row10<UUID, String, String, String, String, String, String, UserRole, OffsetDateTime, OffsetDateTime> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 
     @Override
-    @Nonnull
     public Row10<UUID, String, String, String, String, String, String, UserRole, OffsetDateTime, OffsetDateTime> valuesRow() {
         return (Row10) super.valuesRow();
     }
 
     @Override
-    @Nonnull
     public Field<UUID> field1() {
         return Profile.PROFILE.ID;
     }
 
     @Override
-    @Nonnull
     public Field<String> field2() {
         return Profile.PROFILE.NAME;
     }
 
     @Override
-    @Nonnull
     public Field<String> field3() {
         return Profile.PROFILE.GITHUB_USERNAME;
     }
 
     @Override
-    @Nonnull
     public Field<String> field4() {
         return Profile.PROFILE.EMAIL;
     }
 
     @Override
-    @Nonnull
     public Field<String> field5() {
         return Profile.PROFILE.PHOTO;
     }
 
     @Override
-    @Nonnull
     public Field<String> field6() {
         return Profile.PROFILE.GITHUB_UNIQUE_ID;
     }
 
     @Override
-    @Nonnull
     public Field<String> field7() {
         return Profile.PROFILE.ACCESS_TOKEN;
     }
 
     @Override
-    @Nonnull
     public Field<UserRole> field8() {
         return Profile.PROFILE.ROLE;
     }
 
     @Override
-    @Nonnull
     public Field<OffsetDateTime> field9() {
         return Profile.PROFILE.CREATED_AT;
     }
 
     @Override
-    @Nonnull
     public Field<OffsetDateTime> field10() {
         return Profile.PROFILE.UPDATED_AT;
     }
 
     @Override
-    @Nonnull
     public UUID component1() {
         return getId();
     }
 
     @Override
-    @Nonnull
     public String component2() {
         return getName();
     }
 
     @Override
-    @Nonnull
     public String component3() {
         return getGithubUsername();
     }
 
     @Override
-    @Nonnull
     public String component4() {
         return getEmail();
     }
 
     @Override
-    @Nonnull
     public String component5() {
         return getPhoto();
     }
 
     @Override
-    @Nonnull
     public String component6() {
         return getGithubUniqueId();
     }
 
     @Override
-    @Nonnull
     public String component7() {
         return getAccessToken();
     }
 
     @Override
-    @Nonnull
     public UserRole component8() {
         return getRole();
     }
 
     @Override
-    @Nonnull
     public OffsetDateTime component9() {
         return getCreatedAt();
     }
 
     @Override
-    @Nonnull
     public OffsetDateTime component10() {
         return getUpdatedAt();
     }
 
     @Override
-    @Nonnull
     public UUID value1() {
         return getId();
     }
 
     @Override
-    @Nonnull
     public String value2() {
         return getName();
     }
 
     @Override
-    @Nonnull
     public String value3() {
         return getGithubUsername();
     }
 
     @Override
-    @Nonnull
     public String value4() {
         return getEmail();
     }
 
     @Override
-    @Nonnull
     public String value5() {
         return getPhoto();
     }
 
     @Override
-    @Nonnull
     public String value6() {
         return getGithubUniqueId();
     }
 
     @Override
-    @Nonnull
     public String value7() {
         return getAccessToken();
     }
 
     @Override
-    @Nonnull
     public UserRole value8() {
         return getRole();
     }
 
     @Override
-    @Nonnull
     public OffsetDateTime value9() {
         return getCreatedAt();
     }
 
     @Override
-    @Nonnull
     public OffsetDateTime value10() {
         return getUpdatedAt();
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord value1(@Nonnull UUID value) {
+    public ProfileRecord value1(UUID value) {
         setId(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord value2(@Nonnull String value) {
+    public ProfileRecord value2(String value) {
         setName(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord value3(@Nonnull String value) {
+    public ProfileRecord value3(String value) {
         setGithubUsername(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord value4(@Nonnull String value) {
+    public ProfileRecord value4(String value) {
         setEmail(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord value5(@Nonnull String value) {
+    public ProfileRecord value5(String value) {
         setPhoto(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord value6(@Nonnull String value) {
+    public ProfileRecord value6(String value) {
         setGithubUniqueId(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord value7(@Nonnull String value) {
+    public ProfileRecord value7(String value) {
         setAccessToken(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord value8(@Nonnull UserRole value) {
+    public ProfileRecord value8(UserRole value) {
         setRole(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord value9(@Nonnull OffsetDateTime value) {
+    public ProfileRecord value9(OffsetDateTime value) {
         setCreatedAt(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord value10(@Nonnull OffsetDateTime value) {
+    public ProfileRecord value10(OffsetDateTime value) {
         setUpdatedAt(value);
         return this;
     }
 
     @Override
-    @Nonnull
-    public ProfileRecord values(@Nonnull UUID value1, @Nonnull String value2, @Nonnull String value3, @Nonnull String value4, @Nonnull String value5, @Nonnull String value6, @Nonnull String value7, @Nonnull UserRole value8, @Nonnull OffsetDateTime value9, @Nonnull OffsetDateTime value10) {
+    public ProfileRecord values(UUID value1, String value2, String value3, String value4, String value5, String value6, String value7, UserRole value8, OffsetDateTime value9, OffsetDateTime value10) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -483,7 +427,7 @@ public class ProfileRecord extends UpdatableRecordImpl<ProfileRecord> implements
     /**
      * Create a detached, initialised ProfileRecord
      */
-    public ProfileRecord(@Nonnull UUID id, @Nonnull String name, @Nonnull String githubUsername, @Nonnull String email, @Nonnull String photo, @Nonnull String githubUniqueId, @Nonnull String accessToken, @Nonnull UserRole role, @Nonnull OffsetDateTime createdAt, @Nonnull OffsetDateTime updatedAt) {
+    public ProfileRecord(UUID id, String name, String githubUsername, String email, String photo, String githubUniqueId, String accessToken, UserRole role, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
         super(Profile.PROFILE);
 
         setId(id);
