@@ -57,15 +57,27 @@ jooq {
     }
 }
 
+sourceSets["main"].java {
+    srcDir(databaseCodeGenerationDir)
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 dependencies {
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("org.flywaydb:flyway-core:8.5.12")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.jooq:jooq:3.16.6")
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
+    implementation("javax.servlet:javax.servlet-api:4.0.1")
     jooqGenerator("org.postgresql:postgresql:42.3.6")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
