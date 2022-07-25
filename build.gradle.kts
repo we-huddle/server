@@ -49,12 +49,21 @@ jooq {
                         packageName = "com.wehuddle.db"
                         directory = databaseCodeGenerationDir
                     }
-                    generate.isNullableAnnotation = true
-                    generate.isNonnullAnnotation = true
+                    generate.isNullableAnnotation = false
+                    generate.isNonnullAnnotation = false
                 }
             }
         }
     }
+}
+
+sourceSets["main"].java {
+    srcDir(databaseCodeGenerationDir)
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 dependencies {
@@ -63,6 +72,8 @@ dependencies {
     implementation("io.ktor:ktor-server-cors-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
     implementation("org.flywaydb:flyway-core:8.5.12")
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.jooq:jooq:3.16.6")

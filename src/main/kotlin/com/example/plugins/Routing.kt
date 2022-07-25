@@ -1,16 +1,17 @@
 package com.example.plugins
 
-import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.routing.*
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.request.*
+import com.example.auth.github.client.GithubClient
+import com.example.auth.oidc
+import io.ktor.server.application.Application
+import io.ktor.server.routing.routing
+import org.jooq.DSLContext
 
-fun Application.configureRouting(datasource: HikariDataSource? = null) {
+fun Application.configureRouting(
+    context: DSLContext? = null,
+    githubClient: GithubClient? = null,
+    clientUrl: String? = null
+) {
     routing {
-        get("/") {
-            call.respond(HttpStatusCode.OK, "Hello World!")
-        }
+        oidc(context!!, githubClient!!, clientUrl!!)
     }
 }
