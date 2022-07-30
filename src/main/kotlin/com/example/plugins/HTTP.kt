@@ -13,7 +13,9 @@ fun Application.configureHTTP() {
         allowMethod(HttpMethod.Delete)
         allowMethod(HttpMethod.Patch)
         allowHeader(HttpHeaders.Authorization)
-        allowHeader("MyCustomHeader")
-        anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
+        allowCredentials = true
+        allowNonSimpleContentTypes = true
+        allowHost("localhost:3000", schemes = listOf("http", "https"))
+        allowHost("elegant-jalebi-354786.netlify.app", schemes = listOf("http", "https"))
     }
 }
