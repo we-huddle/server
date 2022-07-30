@@ -8,10 +8,13 @@ import com.example.plugins.configureRouting
 import com.example.plugins.configureSecurity
 import com.example.plugins.performDBMigration
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.ktor.http.ContentType
+import io.ktor.serialization.jackson.JacksonConverter
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
 import retrofit2.Retrofit
@@ -42,5 +45,11 @@ fun main() {
         configureSecurity(context)
         configureHTTP()
         configureRouting(context, configureGithubClient(), clientUrl)
+
+        install(ContentNegotiation) {
+            val mapper = ObjectMapper()
+            mapper.findAndRegisterModules()
+            register(ContentType.Application.Json, JacksonConverter(mapper))
+        }
     }.start(wait = true)
 }
