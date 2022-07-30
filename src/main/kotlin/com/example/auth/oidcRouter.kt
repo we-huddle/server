@@ -15,7 +15,7 @@ import org.jooq.DSLContext
 
 private val PROFILE = Profile.PROFILE
 private val SESSION = Session.SESSION
-private const val SESSION_VALIDITY_DAYS = 7L
+const val SESSION_VALIDITY_DAYS = 7L
 
 fun Route.oidc(context: DSLContext, githubClient: GithubClient, clientUrl: String) {
     route("/authorize") {

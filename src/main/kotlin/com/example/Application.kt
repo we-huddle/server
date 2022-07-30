@@ -8,6 +8,8 @@ import com.example.plugins.configureRouting
 import com.example.plugins.configureSecurity
 import com.example.plugins.performDBMigration
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.ktor.server.application.install
+import io.ktor.server.auth.Authentication
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import org.jooq.SQLDialect
@@ -37,7 +39,7 @@ fun main() {
         val context = DSL.using(datasource, SQLDialect.POSTGRES)
         val clientUrl = System.getenv(ENV_CLIENT_URL)
         performDBMigration(datasource)
-        configureSecurity()
+        configureSecurity(context)
         configureHTTP()
         configureRouting(context, configureGithubClient(), clientUrl)
     }.start(wait = true)
