@@ -10,9 +10,8 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import java.time.OffsetDateTime
-import org.jooq.DSLContext
 
-fun Route.session(context: DSLContext) {
+fun Route.session() {
     authenticate {
         route("/session/destroy") {
             get() {

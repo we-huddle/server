@@ -5,8 +5,17 @@ import com.example.auth.oidc
 import com.example.session.session
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.application.ApplicationCallPipeline
+import io.ktor.server.application.call
+import io.ktor.server.request.httpMethod
+import io.ktor.server.request.uri
+import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
+import io.ktor.util.pipeline.PipelineContext
 import org.jooq.DSLContext
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 const val ERR_TYP_BASE = "https://wehuddle.org/errors"
 
@@ -54,6 +63,27 @@ fun Application.configureRouting(
 ) {
     routing {
         oidc(context!!, githubClient!!, clientUrl!!)
-        session(context)
+        session()
+    }
+    intercept(ApplicationCallPipeline.Monitoring) {
+        interceptExceptions(this, LoggerFactory.getLogger(Application::class.java))
+    }
+}
+
+suspend fun interceptExceptions(pipelineContext: PipelineContext<Unit, ApplicationCall>, logger: Logger) {
+    try {
+        val method = pipelineContext.call.request.httpMethod.value
+        val uri = pipelineContext.call.request.uri
+        logger.info("$method $uri")
+        pipelineContext.proceed()
+    } catch (err: RestException) {
+        logger.error(err.message, err)
+        pipelineContext.call.respond(err.errorResource.status, err.errorResource)
+    } catch (err: Throwable) {
+        logger.error(err.message, err)
+        val message: String = err.localizedMessage ?: err.message ?: "Unexpected error: ${err.javaClass.name}"
+        pipelineContext.call.respond(HttpStatusCode.InternalServerError, message)
+    } finally {
+        logger.info("responding with ${pipelineContext.call.response.status()}")
     }
 }
