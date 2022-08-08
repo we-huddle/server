@@ -5,7 +5,10 @@ package com.wehuddle.db;
 
 
 import com.wehuddle.db.tables.FlywaySchemaHistory;
+import com.wehuddle.db.tables.Issue;
+import com.wehuddle.db.tables.IssueAssignment;
 import com.wehuddle.db.tables.Profile;
+import com.wehuddle.db.tables.PullRequest;
 import com.wehuddle.db.tables.Session;
 
 
@@ -21,9 +24,24 @@ public class Tables {
     public static final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
+     * The table <code>public.issue</code>.
+     */
+    public static final Issue ISSUE = Issue.ISSUE;
+
+    /**
+     * The table <code>public.issue_assignment</code>.
+     */
+    public static final IssueAssignment ISSUE_ASSIGNMENT = IssueAssignment.ISSUE_ASSIGNMENT;
+
+    /**
      * The table <code>public.profile</code>.
      */
     public static final Profile PROFILE = Profile.PROFILE;
+
+    /**
+     * The table <code>public.pull_request</code>.
+     */
+    public static final PullRequest PULL_REQUEST = PullRequest.PULL_REQUEST;
 
     /**
      * The table <code>public.session</code>.
