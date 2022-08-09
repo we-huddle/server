@@ -161,7 +161,7 @@ public class PullRequest extends TableImpl<PullRequestRecord> {
 
     @Override
     public List<UniqueKey<PullRequestRecord>> getKeys() {
-        return Arrays.<UniqueKey<PullRequestRecord>>asList(Keys.PULL_REQUEST_PKEY);
+        return Arrays.<UniqueKey<PullRequestRecord>>asList(Keys.PULL_REQUEST_PKEY, Keys.PULL_REQUEST_GITHUB_PR_ID_KEY);
     }
 
     @Override

@@ -36,10 +36,12 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
+    public static final UniqueKey<IssueRecord> ISSUE_GITHUB_ISSUE_ID_KEY = Internal.createUniqueKey(Issue.ISSUE, DSL.name("issue_github_issue_id_key"), new TableField[] { Issue.ISSUE.GITHUB_ISSUE_ID }, true);
     public static final UniqueKey<IssueRecord> ISSUE_PKEY = Internal.createUniqueKey(Issue.ISSUE, DSL.name("issue_pkey"), new TableField[] { Issue.ISSUE.ID }, true);
     public static final UniqueKey<IssueAssignmentRecord> ISSUE_ASSIGNMENT_ISSUE_ID_PROFILE_ID_KEY = Internal.createUniqueKey(IssueAssignment.ISSUE_ASSIGNMENT, DSL.name("issue_assignment_issue_id_profile_id_key"), new TableField[] { IssueAssignment.ISSUE_ASSIGNMENT.ISSUE_ID, IssueAssignment.ISSUE_ASSIGNMENT.PROFILE_ID }, true);
     public static final UniqueKey<IssueAssignmentRecord> ISSUE_ASSIGNMENT_PKEY = Internal.createUniqueKey(IssueAssignment.ISSUE_ASSIGNMENT, DSL.name("issue_assignment_pkey"), new TableField[] { IssueAssignment.ISSUE_ASSIGNMENT.ID }, true);
     public static final UniqueKey<ProfileRecord> PROFILE_PKEY = Internal.createUniqueKey(Profile.PROFILE, DSL.name("profile_pkey"), new TableField[] { Profile.PROFILE.ID }, true);
+    public static final UniqueKey<PullRequestRecord> PULL_REQUEST_GITHUB_PR_ID_KEY = Internal.createUniqueKey(PullRequest.PULL_REQUEST, DSL.name("pull_request_github_pr_id_key"), new TableField[] { PullRequest.PULL_REQUEST.GITHUB_PR_ID }, true);
     public static final UniqueKey<PullRequestRecord> PULL_REQUEST_PKEY = Internal.createUniqueKey(PullRequest.PULL_REQUEST, DSL.name("pull_request_pkey"), new TableField[] { PullRequest.PULL_REQUEST.ID }, true);
     public static final UniqueKey<SessionRecord> SESSION_PKEY = Internal.createUniqueKey(Session.SESSION, DSL.name("session_pkey"), new TableField[] { Session.SESSION.ID }, true);
 

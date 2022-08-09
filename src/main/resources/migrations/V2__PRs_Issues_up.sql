@@ -16,7 +16,8 @@ CREATE TABLE pull_request
     repo_url     TEXT        NOT NULL,
     opened_at    TIMESTAMPTZ NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (profile_id) REFERENCES profile (id)
+    FOREIGN KEY (profile_id) REFERENCES profile (id),
+    UNIQUE (github_pr_id)
 );
 
 CREATE TYPE ISSUE_STATE AS ENUM ('open', 'closed');
@@ -34,7 +35,8 @@ CREATE TABLE issue
     repo_name       TEXT        NOT NULL,
     repo_url        TEXT        NOT NULL,
     opened_at       TIMESTAMPTZ NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    UNIQUE (github_issue_id)
 );
 
 CREATE TABLE issue_assignment

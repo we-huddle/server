@@ -151,7 +151,7 @@ public class Issue extends TableImpl<IssueRecord> {
 
     @Override
     public List<UniqueKey<IssueRecord>> getKeys() {
-        return Arrays.<UniqueKey<IssueRecord>>asList(Keys.ISSUE_PKEY);
+        return Arrays.<UniqueKey<IssueRecord>>asList(Keys.ISSUE_PKEY, Keys.ISSUE_GITHUB_ISSUE_ID_KEY);
     }
 
     @Override
