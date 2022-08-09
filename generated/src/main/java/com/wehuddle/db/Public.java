@@ -5,7 +5,10 @@ package com.wehuddle.db;
 
 
 import com.wehuddle.db.tables.FlywaySchemaHistory;
+import com.wehuddle.db.tables.Issue;
+import com.wehuddle.db.tables.IssueAssignment;
 import com.wehuddle.db.tables.Profile;
+import com.wehuddle.db.tables.PullRequest;
 import com.wehuddle.db.tables.Session;
 
 import java.util.Arrays;
@@ -35,9 +38,24 @@ public class Public extends SchemaImpl {
     public final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
+     * The table <code>public.issue</code>.
+     */
+    public final Issue ISSUE = Issue.ISSUE;
+
+    /**
+     * The table <code>public.issue_assignment</code>.
+     */
+    public final IssueAssignment ISSUE_ASSIGNMENT = IssueAssignment.ISSUE_ASSIGNMENT;
+
+    /**
      * The table <code>public.profile</code>.
      */
     public final Profile PROFILE = Profile.PROFILE;
+
+    /**
+     * The table <code>public.pull_request</code>.
+     */
+    public final PullRequest PULL_REQUEST = PullRequest.PULL_REQUEST;
 
     /**
      * The table <code>public.session</code>.
@@ -61,7 +79,10 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
+            Issue.ISSUE,
+            IssueAssignment.ISSUE_ASSIGNMENT,
             Profile.PROFILE,
+            PullRequest.PULL_REQUEST,
             Session.SESSION);
     }
 }
