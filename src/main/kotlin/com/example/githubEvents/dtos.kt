@@ -19,17 +19,13 @@ data class PullRequestEventPayload(
     val repository: GithubRepository,
 )
 
-enum class IssueState {
-    open, closed
-}
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class GithubIssue(
     val id: Int,
     val title: String,
     val number: Int,
     val html_url: String,
-    val state: IssueState,
+    val state: String,
     val body: String?,
     val user: GithubUser,
     val assignees: List<GithubUser>,
@@ -42,16 +38,12 @@ data class GithubRepository(
     val html_url: String,
 )
 
-enum class PullRequestState {
-    open, closed
-}
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class GithubPullRequest(
     val id: Int,
     val title: String,
     val number: Int,
-    val state: PullRequestState,
+    val state: String,
     val html_url: String,
     val merged: Boolean,
     val user: GithubUser,
