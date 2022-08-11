@@ -4,12 +4,14 @@
 package com.wehuddle.db;
 
 
+import com.wehuddle.db.tables.Answer;
 import com.wehuddle.db.tables.FlywaySchemaHistory;
 import com.wehuddle.db.tables.Issue;
 import com.wehuddle.db.tables.IssueAssignment;
 import com.wehuddle.db.tables.Profile;
 import com.wehuddle.db.tables.PullRequest;
 import com.wehuddle.db.tables.Session;
+import com.wehuddle.db.tables.Task;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +33,11 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.answer</code>.
+     */
+    public final Answer ANSWER = Answer.ANSWER;
 
     /**
      * The table <code>public.flyway_schema_history</code>.
@@ -63,6 +70,11 @@ public class Public extends SchemaImpl {
     public final Session SESSION = Session.SESSION;
 
     /**
+     * The table <code>public.task</code>.
+     */
+    public final Task TASK = Task.TASK;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -78,11 +90,13 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
+            Answer.ANSWER,
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             Issue.ISSUE,
             IssueAssignment.ISSUE_ASSIGNMENT,
             Profile.PROFILE,
             PullRequest.PULL_REQUEST,
-            Session.SESSION);
+            Session.SESSION,
+            Task.TASK);
     }
 }
