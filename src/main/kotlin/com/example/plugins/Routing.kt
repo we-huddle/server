@@ -5,6 +5,7 @@ import com.example.auth.oidc
 import com.example.auth.user
 import com.example.githubEvents.githubEvents
 import com.example.session.session
+import com.example.tasks.tasks
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
@@ -68,6 +69,7 @@ fun Application.configureRouting(
         session()
         user(context)
         githubEvents(context)
+        tasks(context)
     }
     intercept(ApplicationCallPipeline.Monitoring) {
         interceptExceptions(this, LoggerFactory.getLogger(Application::class.java))

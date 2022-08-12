@@ -4,12 +4,14 @@
 package com.wehuddle.db;
 
 
+import com.wehuddle.db.tables.Answer;
 import com.wehuddle.db.tables.FlywaySchemaHistory;
 import com.wehuddle.db.tables.Issue;
 import com.wehuddle.db.tables.IssueAssignment;
 import com.wehuddle.db.tables.Profile;
 import com.wehuddle.db.tables.PullRequest;
 import com.wehuddle.db.tables.Session;
+import com.wehuddle.db.tables.Task;
 
 
 /**
@@ -17,6 +19,11 @@ import com.wehuddle.db.tables.Session;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.answer</code>.
+     */
+    public static final Answer ANSWER = Answer.ANSWER;
 
     /**
      * The table <code>public.flyway_schema_history</code>.
@@ -47,4 +54,9 @@ public class Tables {
      * The table <code>public.session</code>.
      */
     public static final Session SESSION = Session.SESSION;
+
+    /**
+     * The table <code>public.task</code>.
+     */
+    public static final Task TASK = Task.TASK;
 }

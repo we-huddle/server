@@ -42,6 +42,7 @@ fun main() {
         val context = DSL.using(datasource, SQLDialect.POSTGRES)
         val clientUrl = System.getenv(ENV_CLIENT_URL)
         performDBMigration(datasource)
+
         configureSecurity(context)
         configureHTTP()
         configureRouting(context, configureGithubClient(), clientUrl)
