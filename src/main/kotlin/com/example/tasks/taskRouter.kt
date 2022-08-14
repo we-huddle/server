@@ -3,7 +3,9 @@ package com.example.tasks
 import com.example.plugins.UserPrinciple
 import com.example.plugins.toJsonB
 import com.example.plugins.toJsonString
+import com.wehuddle.db.enums.AnswerStatus
 import com.wehuddle.db.enums.UserRole
+import com.wehuddle.db.tables.Answer
 import com.wehuddle.db.tables.Task
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -17,6 +19,7 @@ import io.ktor.server.routing.route
 import org.jooq.DSLContext
 
 private val TASK = Task.TASK
+private val ANSWER = Answer.ANSWER
 
 fun Route.tasks(context: DSLContext) {
     authenticate {
@@ -45,8 +48,26 @@ fun Route.tasks(context: DSLContext) {
                 }
 
             }
+
+            route("/completed") {
+                get {
+                    val userPrinciple = call.principal<UserPrinciple>()!!
+                    val result = context
+                        .select()
+                        .from(TASK)
+                        .join(ANSWER)
+                        .on(TASK.ID.eq(ANSWER.TASKID))
+                        .where(ANSWER.PROFILEID.eq(userPrinciple.profileId))
+                        .and(ANSWER.STATUS.eq(AnswerStatus.COMPLETED))
+                        .fetch()
+                        .into(Task.TASK)
+                    val taskList = mutableListOf<TaskDto>()
+                    for (record in result) {
+                        taskList.add(record.toDto())
+                    }
+                    call.respond(HttpStatusCode.OK, taskList)
+                }
+            }
         }
-
-
     }
 }

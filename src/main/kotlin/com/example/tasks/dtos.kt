@@ -1,9 +1,7 @@
 package com.example.tasks
 
-import com.example.plugins.toJsonString
 import com.wehuddle.db.enums.TaskType
 import com.wehuddle.db.tables.records.TaskRecord
-import org.jooq.JSONB
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -34,7 +32,7 @@ fun TaskRecord.toDto() = TaskDto(
     this.title,
     this.description,
     this.type,
-    this.details.toJsonString(),
+    this.details.data(),
     this.createdAt,
     this.updatedAt
 )
