@@ -15,6 +15,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import java.time.OffsetDateTime
 import org.jooq.DSLContext
@@ -51,6 +52,22 @@ fun Route.tasks(context: DSLContext) {
                     call.respond(HttpStatusCode.Forbidden, "Permission denied")
                 }
 
+            }
+
+            put {
+                val userPrinciple = call.principal<UserPrinciple>()!!
+                if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                    val taskToBeUpdated = call.receive<TaskDto>()
+                    context.update(TASK)
+                        .set(TASK.TITLE, taskToBeUpdated.title)
+                        .set(TASK.DESCRIPTION, taskToBeUpdated.description)
+                        .set(TASK.DETAILS, taskToBeUpdated.details.toJsonB())
+                        .where(TASK.ID.eq(taskToBeUpdated.id))
+                        .execute()
+                    call.respond(HttpStatusCode.OK)
+                } else {
+                    call.respond(HttpStatusCode.Forbidden, "Permission denied")
+                }
             }
 
             route("/completed") {
