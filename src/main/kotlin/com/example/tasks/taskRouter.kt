@@ -16,6 +16,7 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import java.time.OffsetDateTime
 import org.jooq.DSLContext
 
 private val TASK = Task.TASK
@@ -42,7 +43,10 @@ fun Route.tasks(context: DSLContext) {
                     newTaskRecord.description = taskToBeCreated.description
                     newTaskRecord.type = taskToBeCreated.type
                     newTaskRecord.details = taskToBeCreated.details.toJsonB()
+                    newTaskRecord.createdAt = OffsetDateTime.now()
+                    newTaskRecord.updatedAt = OffsetDateTime.now()
                     newTaskRecord.store()
+                    call.respond(HttpStatusCode.OK)
                 } else {
                     call.respond(HttpStatusCode.Forbidden, "Permission denied")
                 }
