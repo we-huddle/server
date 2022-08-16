@@ -1,6 +1,6 @@
 package com.example.plugins
 
-import com.example.auth.SESSION_VALIDITY_DAYS
+import com.example.routes.auth.SESSION_VALIDITY_DAYS
 import com.wehuddle.db.tables.Profile
 import com.wehuddle.db.tables.Session
 import com.wehuddle.db.tables.records.ProfileRecord

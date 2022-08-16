@@ -1,7 +1,7 @@
-package com.example.githubEvents
+package com.example.routes.githubEvents
 
 import com.example.plugins.toJsonB
-import com.example.tasks.toDto
+import com.example.routes.tasks.toDto
 import com.wehuddle.db.enums.AnswerStatus
 import com.wehuddle.db.enums.IssueState
 import com.wehuddle.db.enums.PrState

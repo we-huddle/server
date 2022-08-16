@@ -1,7 +1,7 @@
 package com.example
 
-import com.example.auth.github.client.GithubClient
-import com.example.auth.github.client.GithubService
+import com.example.routes.auth.github.client.GithubClient
+import com.example.routes.auth.github.client.GithubService
 import com.example.plugins.configureHTTP
 import com.example.plugins.configureHikariDataSource
 import com.example.plugins.configureRouting

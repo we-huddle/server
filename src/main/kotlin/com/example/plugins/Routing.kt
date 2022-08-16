@@ -1,11 +1,11 @@
 package com.example.plugins
 
-import com.example.auth.github.client.GithubClient
-import com.example.auth.oidc
-import com.example.auth.user
-import com.example.githubEvents.githubEvents
-import com.example.session.session
-import com.example.tasks.tasks
+import com.example.routes.auth.github.client.GithubClient
+import com.example.routes.auth.oidc
+import com.example.routes.auth.user
+import com.example.routes.githubEvents.githubEvents
+import com.example.routes.session.session
+import com.example.routes.tasks.tasks
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall

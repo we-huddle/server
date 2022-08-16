@@ -1,4 +1,4 @@
-package com.example.githubEvents
+package com.example.routes.githubEvents
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.OffsetDateTime

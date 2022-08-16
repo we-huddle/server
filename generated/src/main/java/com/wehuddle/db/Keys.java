@@ -11,6 +11,8 @@ import com.wehuddle.db.tables.IssueAssignment;
 import com.wehuddle.db.tables.Profile;
 import com.wehuddle.db.tables.PullRequest;
 import com.wehuddle.db.tables.Session;
+import com.wehuddle.db.tables.Sprint;
+import com.wehuddle.db.tables.SprintIssue;
 import com.wehuddle.db.tables.Task;
 import com.wehuddle.db.tables.records.AnswerRecord;
 import com.wehuddle.db.tables.records.FlywaySchemaHistoryRecord;
@@ -19,6 +21,8 @@ import com.wehuddle.db.tables.records.IssueRecord;
 import com.wehuddle.db.tables.records.ProfileRecord;
 import com.wehuddle.db.tables.records.PullRequestRecord;
 import com.wehuddle.db.tables.records.SessionRecord;
+import com.wehuddle.db.tables.records.SprintIssueRecord;
+import com.wehuddle.db.tables.records.SprintRecord;
 import com.wehuddle.db.tables.records.TaskRecord;
 
 import org.jooq.ForeignKey;
@@ -49,6 +53,9 @@ public class Keys {
     public static final UniqueKey<PullRequestRecord> PULL_REQUEST_GITHUB_PR_ID_KEY = Internal.createUniqueKey(PullRequest.PULL_REQUEST, DSL.name("pull_request_github_pr_id_key"), new TableField[] { PullRequest.PULL_REQUEST.GITHUB_PR_ID }, true);
     public static final UniqueKey<PullRequestRecord> PULL_REQUEST_PKEY = Internal.createUniqueKey(PullRequest.PULL_REQUEST, DSL.name("pull_request_pkey"), new TableField[] { PullRequest.PULL_REQUEST.ID }, true);
     public static final UniqueKey<SessionRecord> SESSION_PKEY = Internal.createUniqueKey(Session.SESSION, DSL.name("session_pkey"), new TableField[] { Session.SESSION.ID }, true);
+    public static final UniqueKey<SprintRecord> SPRINT_PKEY = Internal.createUniqueKey(Sprint.SPRINT, DSL.name("sprint_pkey"), new TableField[] { Sprint.SPRINT.ID }, true);
+    public static final UniqueKey<SprintIssueRecord> SPRINT_ISSUE_PKEY = Internal.createUniqueKey(SprintIssue.SPRINT_ISSUE, DSL.name("sprint_issue_pkey"), new TableField[] { SprintIssue.SPRINT_ISSUE.ID }, true);
+    public static final UniqueKey<SprintIssueRecord> SPRINT_ISSUE_SPRINT_ID_ISSUE_ID_KEY = Internal.createUniqueKey(SprintIssue.SPRINT_ISSUE, DSL.name("sprint_issue_sprint_id_issue_id_key"), new TableField[] { SprintIssue.SPRINT_ISSUE.SPRINT_ID, SprintIssue.SPRINT_ISSUE.ISSUE_ID }, true);
     public static final UniqueKey<TaskRecord> TASK_PKEY = Internal.createUniqueKey(Task.TASK, DSL.name("task_pkey"), new TableField[] { Task.TASK.ID }, true);
     public static final UniqueKey<TaskRecord> TASK_TITLE_KEY = Internal.createUniqueKey(Task.TASK, DSL.name("task_title_key"), new TableField[] { Task.TASK.TITLE }, true);
 
@@ -60,4 +67,6 @@ public class Keys {
     public static final ForeignKey<AnswerRecord, TaskRecord> ANSWER__ANSWER_TASKID_FKEY = Internal.createForeignKey(Answer.ANSWER, DSL.name("answer_taskid_fkey"), new TableField[] { Answer.ANSWER.TASKID }, Keys.TASK_PKEY, new TableField[] { Task.TASK.ID }, true);
     public static final ForeignKey<PullRequestRecord, ProfileRecord> PULL_REQUEST__PULL_REQUEST_PROFILE_ID_FKEY = Internal.createForeignKey(PullRequest.PULL_REQUEST, DSL.name("pull_request_profile_id_fkey"), new TableField[] { PullRequest.PULL_REQUEST.PROFILE_ID }, Keys.PROFILE_PKEY, new TableField[] { Profile.PROFILE.ID }, true);
     public static final ForeignKey<SessionRecord, ProfileRecord> SESSION__SESSION_PROFILE_ID_FKEY = Internal.createForeignKey(Session.SESSION, DSL.name("session_profile_id_fkey"), new TableField[] { Session.SESSION.PROFILE_ID }, Keys.PROFILE_PKEY, new TableField[] { Profile.PROFILE.ID }, true);
+    public static final ForeignKey<SprintIssueRecord, IssueRecord> SPRINT_ISSUE__SPRINT_ISSUE_ISSUE_ID_FKEY = Internal.createForeignKey(SprintIssue.SPRINT_ISSUE, DSL.name("sprint_issue_issue_id_fkey"), new TableField[] { SprintIssue.SPRINT_ISSUE.ISSUE_ID }, Keys.ISSUE_PKEY, new TableField[] { Issue.ISSUE.ID }, true);
+    public static final ForeignKey<SprintIssueRecord, SprintRecord> SPRINT_ISSUE__SPRINT_ISSUE_SPRINT_ID_FKEY = Internal.createForeignKey(SprintIssue.SPRINT_ISSUE, DSL.name("sprint_issue_sprint_id_fkey"), new TableField[] { SprintIssue.SPRINT_ISSUE.SPRINT_ID }, Keys.SPRINT_PKEY, new TableField[] { Sprint.SPRINT.ID }, true);
 }
