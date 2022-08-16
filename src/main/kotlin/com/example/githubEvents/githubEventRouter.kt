@@ -127,9 +127,11 @@ fun handlePullRequestEventTrigger(pullRequestEvent: PullRequestEventPayload, con
         val associatedProfileId = transactionContext.fetchOne(
             PROFILE.where(PROFILE.GITHUB_UNIQUE_ID.eq(pull_request.user.id.toString()))
         )?.id
-        if (pull_request.merged && associatedProfileId != null) {
+        if (!existingPullRequest.merged && pull_request.merged && associatedProfileId != null) {
             val prCount = transactionContext
-                .fetchCount(PULL_REQUEST.where(PULL_REQUEST.PROFILE_ID.eq(associatedProfileId))) + 1
+                .fetchCount(
+                    PULL_REQUEST.where(PULL_REQUEST.PROFILE_ID.eq(associatedProfileId).and(PULL_REQUEST.MERGED))
+                ) + 1
             val incompleteDevTasks = transactionContext
                 .select(TASK.asterisk())
                 .from(TASK)
