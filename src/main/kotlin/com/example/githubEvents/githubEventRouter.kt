@@ -1,12 +1,17 @@
 package com.example.githubEvents
 
 import com.example.plugins.toJsonB
+import com.example.tasks.toDto
+import com.wehuddle.db.enums.AnswerStatus
 import com.wehuddle.db.enums.IssueState
 import com.wehuddle.db.enums.PrState
+import com.wehuddle.db.enums.TaskType
+import com.wehuddle.db.tables.Answer
 import com.wehuddle.db.tables.Issue
 import com.wehuddle.db.tables.IssueAssignment
 import com.wehuddle.db.tables.Profile
 import com.wehuddle.db.tables.PullRequest
+import com.wehuddle.db.tables.Task
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.request.header
@@ -15,6 +20,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import java.time.OffsetDateTime
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 
@@ -22,6 +28,8 @@ private val PULL_REQUEST = PullRequest.PULL_REQUEST
 private val ISSUE = Issue.ISSUE
 private val ISSUE_ASSIGNMENT = IssueAssignment.ISSUE_ASSIGNMENT
 private val PROFILE = Profile.PROFILE
+private val TASK = Task.TASK
+private val ANSWER = Answer.ANSWER
 
 fun Route.githubEvents(context: DSLContext) {
     route("/github/event") {
@@ -60,7 +68,7 @@ fun handleIssueEventTrigger(issueEvent: IssueEventPayload, context: DSLContext) 
         existingIssue.openedAt = issue.created_at
         existingIssue.store()
 
-        context.deleteFrom(ISSUE_ASSIGNMENT)
+        transactionContext.deleteFrom(ISSUE_ASSIGNMENT)
             .where(ISSUE_ASSIGNMENT.ISSUE_ID.eq(existingIssue.id))
             .execute()
 
@@ -111,13 +119,46 @@ fun handleIssueEventTrigger(issueEvent: IssueEventPayload, context: DSLContext) 
 
 fun handlePullRequestEventTrigger(pullRequestEvent: PullRequestEventPayload, context: DSLContext) {
     val (pull_request, repository) = pullRequestEvent
-    val existingPullRequest = context.fetchOne(
-        PULL_REQUEST.where(PULL_REQUEST.GITHUB_PR_ID.eq(pull_request.id))
-    )
-    if (existingPullRequest != null) {
-        // TODO: open a transaction, check if pr is merged,
-        //  if it is,
-        //    calculate the pr count and mark the tasks as completed if there are any
+    val isExistingPR = context.transactionResult { config ->
+        val transactionContext = DSL.using(config)
+        val existingPullRequest = transactionContext.fetchOne(
+            PULL_REQUEST.where(PULL_REQUEST.GITHUB_PR_ID.eq(pull_request.id))
+        ) ?: return@transactionResult false
+        val associatedProfileId = transactionContext.fetchOne(
+            PROFILE.where(PROFILE.GITHUB_UNIQUE_ID.eq(pull_request.user.id.toString()))
+        )?.id
+        if (!existingPullRequest.merged && pull_request.merged && associatedProfileId != null) {
+            val prCount = transactionContext
+                .fetchCount(
+                    PULL_REQUEST.where(PULL_REQUEST.PROFILE_ID.eq(associatedProfileId).and(PULL_REQUEST.MERGED))
+                ) + 1
+            val incompleteDevTasks = transactionContext
+                .select(TASK.asterisk())
+                .from(TASK)
+                .leftJoin(ANSWER)
+                .on(
+                    TASK.ID.eq(ANSWER.TASKID)
+                        .and(ANSWER.PROFILEID.eq(associatedProfileId))
+                        .and(ANSWER.STATUS.eq(AnswerStatus.COMPLETED))
+                )
+                .where(TASK.TYPE.eq(TaskType.DEV))
+                .and(ANSWER.ID.isNull)
+                .fetchInto(TASK)
+                .toList()
+                .map { taskRecord -> taskRecord.toDto() }
+            for (task in incompleteDevTasks) {
+                if (task.details.noOfPulls <= prCount) {
+                    val newAnswer = transactionContext.newRecord(ANSWER)
+                    newAnswer.profileid = associatedProfileId
+                    newAnswer.taskid = task.id
+                    newAnswer.status = AnswerStatus.COMPLETED
+                    newAnswer.details = task.details.toJsonB()
+                    newAnswer.createdAt = OffsetDateTime.now()
+                    newAnswer.updatedAt = OffsetDateTime.now()
+                    newAnswer.store()
+                }
+            }
+        }
         existingPullRequest.githubPrId = pull_request.id
         existingPullRequest.title = pull_request.title
         existingPullRequest.number = pull_request.number
@@ -130,8 +171,9 @@ fun handlePullRequestEventTrigger(pullRequestEvent: PullRequestEventPayload, con
         existingPullRequest.repoName = repository.full_name
         existingPullRequest.repoUrl = repository.html_url
         existingPullRequest.store()
-        return
+        return@transactionResult true
     }
+    if (isExistingPR) return
     val associatedProfileId = context.fetchOne(
         PROFILE.where(PROFILE.GITHUB_UNIQUE_ID.eq(pull_request.user.id.toString()))
     )?.id
