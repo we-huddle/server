@@ -56,30 +56,7 @@ fun Route.sprints(context: DSLContext) {
                 call.respond(HttpStatusCode.OK, sprintList)
             }
 
-            route("/{sprintId}/issues") {
-                post {
-                    val userPrinciple = call.principal<UserPrinciple>()!!
-                    if (userPrinciple.profile.role != UserRole.HUDDLE_AGENT) {
-                        call.respond(HttpStatusCode.Forbidden)
-                        return@post
-                    }
-                    val listOfIssueIdsToAdd = call.receive<List<UUID>>()
-                    val sprintId = UUID.fromString(call.parameters["sprintId"]!!)
-                    val existingSprint = context.fetchOne(
-                        SPRINT.where(SPRINT.ID.eq(sprintId))
-                    )
-                    if (existingSprint == null) {
-                        call.respond(HttpStatusCode.BadRequest, "Invalid sprint id")
-                    }
-                    for (issueId in listOfIssueIdsToAdd) {
-                        val newSprintIssue = context.newRecord(SprintIssue.SPRINT_ISSUE)
-                        newSprintIssue.sprintId = sprintId
-                        newSprintIssue.issueId = issueId
-                        newSprintIssue.store()
-                    }
-                    call.respond(HttpStatusCode.OK)
-                }
-
+            route("/{sprintId}") {
                 get {
                     val sprintId = UUID.fromString(call.parameters["sprintId"]!!)
                     val existingSprint = context.fetchOne(
@@ -87,17 +64,54 @@ fun Route.sprints(context: DSLContext) {
                     )
                     if (existingSprint == null) {
                         call.respond(HttpStatusCode.BadRequest, "Invalid sprint id")
+                        return@get
                     }
-                    val issueList = context
-                        .select(ISSUE.asterisk())
-                        .from(ISSUE)
-                        .join(SprintIssue.SPRINT_ISSUE)
-                        .on(ISSUE.ID.eq(SprintIssue.SPRINT_ISSUE.ISSUE_ID))
-                        .where(SprintIssue.SPRINT_ISSUE.SPRINT_ID.eq(sprintId))
-                        .fetchInto(ISSUE)
-                        .toList()
-                        .map { issueRecord -> issueRecord.toDto() }
-                    call.respond(HttpStatusCode.OK, issueList)
+                    call.respond(HttpStatusCode.OK, existingSprint.toDto())
+                }
+
+                route("/issues") {
+                    post {
+                        val userPrinciple = call.principal<UserPrinciple>()!!
+                        if (userPrinciple.profile.role != UserRole.HUDDLE_AGENT) {
+                            call.respond(HttpStatusCode.Forbidden)
+                            return@post
+                        }
+                        val listOfIssueIdsToAdd = call.receive<List<UUID>>()
+                        val sprintId = UUID.fromString(call.parameters["sprintId"]!!)
+                        val existingSprint = context.fetchOne(
+                            SPRINT.where(SPRINT.ID.eq(sprintId))
+                        )
+                        if (existingSprint == null) {
+                            call.respond(HttpStatusCode.BadRequest, "Invalid sprint id")
+                        }
+                        for (issueId in listOfIssueIdsToAdd) {
+                            val newSprintIssue = context.newRecord(SprintIssue.SPRINT_ISSUE)
+                            newSprintIssue.sprintId = sprintId
+                            newSprintIssue.issueId = issueId
+                            newSprintIssue.store()
+                        }
+                        call.respond(HttpStatusCode.OK)
+                    }
+
+                    get {
+                        val sprintId = UUID.fromString(call.parameters["sprintId"]!!)
+                        val existingSprint = context.fetchOne(
+                            SPRINT.where(SPRINT.ID.eq(sprintId))
+                        )
+                        if (existingSprint == null) {
+                            call.respond(HttpStatusCode.BadRequest, "Invalid sprint id")
+                        }
+                        val issueList = context
+                            .select(ISSUE.asterisk())
+                            .from(ISSUE)
+                            .join(SprintIssue.SPRINT_ISSUE)
+                            .on(ISSUE.ID.eq(SprintIssue.SPRINT_ISSUE.ISSUE_ID))
+                            .where(SprintIssue.SPRINT_ISSUE.SPRINT_ID.eq(sprintId))
+                            .fetchInto(ISSUE)
+                            .toList()
+                            .map { issueRecord -> issueRecord.toDto() }
+                        call.respond(HttpStatusCode.OK, issueList)
+                    }
                 }
             }
         }
