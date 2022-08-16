@@ -1,8 +1,6 @@
 package com.example.tasks
 
-import com.example.plugins.gsonMapper
 import com.example.plugins.toObject
-import com.google.gson.GsonBuilder
 import com.wehuddle.db.enums.TaskType
 import com.wehuddle.db.tables.records.TaskRecord
 import java.time.OffsetDateTime
