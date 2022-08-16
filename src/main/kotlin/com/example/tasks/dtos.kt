@@ -1,15 +1,22 @@
 package com.example.tasks
 
+import com.example.plugins.gsonMapper
+import com.example.plugins.toObject
+import com.google.gson.GsonBuilder
 import com.wehuddle.db.enums.TaskType
 import com.wehuddle.db.tables.records.TaskRecord
 import java.time.OffsetDateTime
 import java.util.UUID
 
+class DevTaskDetails (
+    val noOfPulls: Int,
+)
+
 open class PartialTaskDto (
     open val title: String,
     open val description: String,
     open val type: TaskType,
-    open val details: String,
+    open val details: DevTaskDetails,
 )
 
 class TaskDto (
@@ -17,7 +24,7 @@ class TaskDto (
     override val title: String,
     override val description: String,
     override val type: TaskType,
-    override val details: String,
+    override val details: DevTaskDetails,
     val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime,
 ) : PartialTaskDto (
@@ -32,7 +39,7 @@ fun TaskRecord.toDto() = TaskDto(
     this.title,
     this.description,
     this.type,
-    this.details.data(),
+    this.details.data().toObject(DevTaskDetails::class.java),
     this.createdAt,
     this.updatedAt
 )

@@ -84,4 +84,5 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     runtimeOnly("org.postgresql:postgresql:42.3.6")
+    implementation("com.google.code.gson:gson:2.9.1")
 }
