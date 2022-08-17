@@ -19,6 +19,7 @@ import io.ktor.server.routing.delete
 import io.ktor.server.routing.route
 import java.time.OffsetDateTime
 import org.jooq.DSLContext
+import java.util.*
 
 private val TASK = Task.TASK
 private val ANSWER = Answer.ANSWER
@@ -73,7 +74,7 @@ fun Route.tasks(context: DSLContext) {
             delete("/{id}") {
                 val userPrinciple = call.principal<UserPrinciple>()!!
                 if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
-                    val taskIDToBeDeleted = call.parameters["id"]
+                    val taskIDToBeDeleted = UUID.fromString(call.parameters["id"]!!)
                     context.deleteFrom(TASK).where(TASK.ID.eq(taskIDToBeDeleted)).execute()
                     call.respond(HttpStatusCode.OK)
                 } else {
