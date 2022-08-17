@@ -15,9 +15,11 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.route
 import java.time.OffsetDateTime
 import org.jooq.DSLContext
+import java.util.*
 
 private val TASK = Task.TASK
 private val ANSWER = Answer.ANSWER
@@ -63,6 +65,17 @@ fun Route.tasks(context: DSLContext) {
                         .set(TASK.DETAILS, taskToBeUpdated.details.toJsonB())
                         .where(TASK.ID.eq(taskToBeUpdated.id))
                         .execute()
+                    call.respond(HttpStatusCode.OK)
+                } else {
+                    call.respond(HttpStatusCode.Forbidden, "Permission denied")
+                }
+            }
+
+            delete("/{id}") {
+                val userPrinciple = call.principal<UserPrinciple>()!!
+                if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                    val taskIDToBeDeleted = UUID.fromString(call.parameters["id"]!!)
+                    context.deleteFrom(TASK).where(TASK.ID.eq(taskIDToBeDeleted)).execute()
                     call.respond(HttpStatusCode.OK)
                 } else {
                     call.respond(HttpStatusCode.Forbidden, "Permission denied")
