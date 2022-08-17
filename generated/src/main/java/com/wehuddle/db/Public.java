@@ -11,12 +11,15 @@ import com.wehuddle.db.tables.IssueAssignment;
 import com.wehuddle.db.tables.Profile;
 import com.wehuddle.db.tables.PullRequest;
 import com.wehuddle.db.tables.Session;
+import com.wehuddle.db.tables.Sprint;
+import com.wehuddle.db.tables.SprintIssue;
 import com.wehuddle.db.tables.Task;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.jooq.Catalog;
+import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
 
@@ -70,6 +73,16 @@ public class Public extends SchemaImpl {
     public final Session SESSION = Session.SESSION;
 
     /**
+     * The table <code>public.sprint</code>.
+     */
+    public final Sprint SPRINT = Sprint.SPRINT;
+
+    /**
+     * The table <code>public.sprint_issue</code>.
+     */
+    public final SprintIssue SPRINT_ISSUE = SprintIssue.SPRINT_ISSUE;
+
+    /**
      * The table <code>public.task</code>.
      */
     public final Task TASK = Task.TASK;
@@ -88,6 +101,12 @@ public class Public extends SchemaImpl {
     }
 
     @Override
+    public final List<Sequence<?>> getSequences() {
+        return Arrays.<Sequence<?>>asList(
+            Sequences.SPRINT_NUMBER_SEQ);
+    }
+
+    @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
             Answer.ANSWER,
@@ -97,6 +116,8 @@ public class Public extends SchemaImpl {
             Profile.PROFILE,
             PullRequest.PULL_REQUEST,
             Session.SESSION,
+            Sprint.SPRINT,
+            SprintIssue.SPRINT_ISSUE,
             Task.TASK);
     }
 }

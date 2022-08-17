@@ -1,4 +1,4 @@
-package com.example.auth.github.client
+package com.example.routes.auth.github.client
 
 class GithubClient(
     private val clientId: String,

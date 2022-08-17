@@ -1,4 +1,4 @@
-package com.example.session
+package com.example.routes.session
 
 import com.example.plugins.UserPrinciple
 import io.ktor.http.HttpStatusCode

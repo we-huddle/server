@@ -11,6 +11,8 @@ import com.wehuddle.db.tables.IssueAssignment;
 import com.wehuddle.db.tables.Profile;
 import com.wehuddle.db.tables.PullRequest;
 import com.wehuddle.db.tables.Session;
+import com.wehuddle.db.tables.Sprint;
+import com.wehuddle.db.tables.SprintIssue;
 import com.wehuddle.db.tables.Task;
 
 
@@ -54,6 +56,16 @@ public class Tables {
      * The table <code>public.session</code>.
      */
     public static final Session SESSION = Session.SESSION;
+
+    /**
+     * The table <code>public.sprint</code>.
+     */
+    public static final Sprint SPRINT = Sprint.SPRINT;
+
+    /**
+     * The table <code>public.sprint_issue</code>.
+     */
+    public static final SprintIssue SPRINT_ISSUE = SprintIssue.SPRINT_ISSUE;
 
     /**
      * The table <code>public.task</code>.

@@ -1,4 +1,4 @@
-package com.example.githubEvents
+package com.example.routes.githubEvents
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.OffsetDateTime
@@ -56,4 +56,5 @@ data class GithubUser(
     val id: Int,
     val login: String,
     val html_url: String,
+    val avatar_url: String,
 )

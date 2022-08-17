@@ -1,6 +1,6 @@
-package com.example.auth
+package com.example.routes.auth
 
-import com.example.auth.github.client.GithubClient
+import com.example.routes.auth.github.client.GithubClient
 import com.wehuddle.db.enums.UserRole
 import com.wehuddle.db.tables.Profile
 import com.wehuddle.db.tables.Session

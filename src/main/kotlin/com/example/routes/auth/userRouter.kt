@@ -1,6 +1,6 @@
-package com.example.auth
+package com.example.routes.auth
 
-import com.example.auth.github.client.toDto
+import com.example.routes.auth.github.client.toDto
 import com.example.plugins.UserPrinciple
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call

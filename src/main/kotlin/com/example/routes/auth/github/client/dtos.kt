@@ -1,4 +1,4 @@
-package com.example.auth.github.client
+package com.example.routes.auth.github.client
 
 import com.wehuddle.db.enums.UserRole
 import com.wehuddle.db.tables.records.ProfileRecord

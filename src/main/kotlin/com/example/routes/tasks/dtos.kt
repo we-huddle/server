@@ -1,4 +1,4 @@
-package com.example.tasks
+package com.example.routes.tasks
 
 import com.example.plugins.toObject
 import com.wehuddle.db.enums.TaskType
@@ -25,7 +25,7 @@ class TaskDto (
     override val details: DevTaskDetails,
     val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime,
-) : PartialTaskDto (
+) : PartialTaskDto(
     title,
     description,
     type,
