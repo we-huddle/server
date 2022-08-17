@@ -56,4 +56,5 @@ data class GithubUser(
     val id: Int,
     val login: String,
     val html_url: String,
+    val avatar_url: String,
 )
