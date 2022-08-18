@@ -40,7 +40,7 @@ fun Route.leaderboard(context: DSLContext) {
                 }
             }
             val fetchedRecords = context
-                .select(DSL.jsonbObjectAgg(PULL_REQUEST.GITHUB_USER), DSL.count())
+                .select(PULL_REQUEST.GITHUB_USER, DSL.count())
                 .from(PULL_REQUEST)
                 .where(PULL_REQUEST.OPENED_AT.between(startDate).and(endDate))
                 .and(PULL_REQUEST.MERGED)
