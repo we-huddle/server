@@ -36,6 +36,20 @@ fun Route.tasks(context: DSLContext) {
                 call.respond(HttpStatusCode.OK, taskList)
             }
 
+            route("/{taskId}") {
+                get {
+                    val taskId = UUID.fromString(call.parameters["taskId"]!!)
+                    val existingTask = context.fetchOne(
+                        TASK.where(TASK.ID.eq(taskId))
+                    )
+                    if (existingTask == null) {
+                        call.respond(HttpStatusCode.BadRequest, "Invalid task id")
+                        return@get
+                    }
+                    call.respond(HttpStatusCode.OK, existingTask.toDto())
+                }
+            }
+
             post {
                 val userPrinciple = call.principal<UserPrinciple>()!!
                 if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
