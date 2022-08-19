@@ -3,6 +3,7 @@ package com.example.routes.tasks
 import com.example.plugins.UserPrinciple
 import com.example.plugins.toJsonB
 import com.wehuddle.db.enums.AnswerStatus
+import com.wehuddle.db.enums.TaskType
 import com.wehuddle.db.enums.UserRole
 import com.wehuddle.db.tables.Answer
 import com.wehuddle.db.tables.Task
@@ -28,10 +29,12 @@ fun Route.tasks(context: DSLContext) {
     authenticate {
         route("/tasks") {
             get {
-                val taskListResults = context.fetch(TASK)
-                val taskList = mutableListOf<TaskDto>()
-                for (record in taskListResults) {
-                    taskList.add(record.toDto())
+                val taskList = context.fetch(TASK).map { taskRecord ->
+                    when (taskRecord.type) {
+                        TaskType.QUIZ -> taskRecord.toDto<PartialQuizTaskDetails>()
+                        TaskType.DEV -> taskRecord.toDto<DevTaskDetails>()
+                        else -> throw Exception()
+                    }
                 }
                 call.respond(HttpStatusCode.OK, taskList)
             }
@@ -46,14 +49,96 @@ fun Route.tasks(context: DSLContext) {
                         call.respond(HttpStatusCode.BadRequest, "Invalid task id")
                         return@get
                     }
-                    call.respond(HttpStatusCode.OK, existingTask.toDto())
+                    val response = when (existingTask.type) {
+                        TaskType.DEV -> existingTask.toDto<DevTaskDetails>()
+                        TaskType.QUIZ -> existingTask.toDto<PartialQuizTaskDetails>()
+                        else -> throw Exception()
+                    }
+                    call.respond(HttpStatusCode.OK, response)
+                }
+
+                get("/agent") {
+                    val userPrinciple = call.principal<UserPrinciple>()!!
+                    if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                        val taskId = UUID.fromString(call.parameters["taskId"]!!)
+                        val existingTask = context.fetchOne(
+                            TASK.where(TASK.ID.eq(taskId))
+                        )
+                        if (existingTask == null) {
+                            call.respond(HttpStatusCode.BadRequest, "Invalid task id")
+                            return@get
+                        }
+                        val response = when (existingTask.type) {
+                            TaskType.DEV -> existingTask.toDto<DevTaskDetails>()
+                            TaskType.QUIZ -> existingTask.toDto<QuizTaskDetails>()
+                            else -> throw Exception()
+                        }
+                        call.respond(HttpStatusCode.OK, response)
+                    } else {
+                        call.respond(HttpStatusCode.Forbidden, "Permission denied")
+                    }
+                }
+
+                route("/answer") {
+                    post {
+                        val profile = call.principal<UserPrinciple>()!!
+                        val answerPayload = call.receive<QuizAnswerPayload>()
+                        val task = context.fetchOne(TASK.where(TASK.ID.eq(answerPayload.taskId)))?.toDto<QuizTaskDetails>()
+                        if (task == null || task.type == TaskType.DEV) {
+                            call.respond(HttpStatusCode.BadRequest, "Invalid task id")
+                            return@post
+                        }
+                        val answers = answerPayload.answers
+                        var count = 0
+                        for (question in task.details.questions) {
+                            val givenAnswer = answers[question.number]
+                            if (givenAnswer == question.correctAnswerKey) count++
+                        }
+                        val score = (count.toDouble()/task.details.questions.size)*100
+                        val newAnswer = context.newRecord(ANSWER)
+                        newAnswer.taskid = task.id
+                        newAnswer.status = if (score >= task.details.passMark)
+                            AnswerStatus.COMPLETED else AnswerStatus.INCOMPLETE
+                        newAnswer.details = answerPayload.toJsonB()
+                        newAnswer.profileid = profile.profileId
+                        newAnswer.createdAt = OffsetDateTime.now()
+                        newAnswer.updatedAt = OffsetDateTime.now()
+                        newAnswer.store()
+                        call.respond(HttpStatusCode.OK)
+                    }
+
+                    get {
+                        val profile = call.principal<UserPrinciple>()!!
+                        val taskId = UUID.fromString(call.parameters["taskId"]!!)
+                        val existingTask = context.fetchOne(
+                            TASK.where(TASK.ID.eq(taskId))
+                        )
+                        if (existingTask == null) {
+                            call.respond(HttpStatusCode.BadRequest, "Invalid task id")
+                            return@get
+                        }
+                        val answerList = context.fetch(
+                            ANSWER.where(ANSWER.TASKID.eq(taskId).and(ANSWER.PROFILEID.eq(profile.profileId)))
+                        ).toList().map { answerRecord ->
+                            when (existingTask.type) {
+                                TaskType.DEV -> answerRecord.toDto<DevTaskDetails>()
+                                TaskType.QUIZ -> answerRecord.toDto<QuizAnswerPayload>()
+                                else -> throw Exception()
+                            }
+                        }
+                        call.respond(HttpStatusCode.OK, answerList)
+                    }
                 }
             }
 
-            post {
+            post("/{type}") {
                 val userPrinciple = call.principal<UserPrinciple>()!!
                 if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
-                    val taskToBeCreated = call.receive<PartialTaskDto>()
+                    val taskToBeCreated = when (call.parameters["type"]) {
+                        "dev" -> call.receive<TaskDto<DevTaskDetails>>()
+                        "quiz" -> call.receive<TaskDto<QuizTaskDetails>>()
+                        else -> throw Exception()
+                    }
                     val newTaskRecord = context.newRecord(TASK)
                     newTaskRecord.title = taskToBeCreated.title
                     newTaskRecord.description = taskToBeCreated.description
@@ -66,13 +151,12 @@ fun Route.tasks(context: DSLContext) {
                 } else {
                     call.respond(HttpStatusCode.Forbidden, "Permission denied")
                 }
-
             }
 
             put {
                 val userPrinciple = call.principal<UserPrinciple>()!!
                 if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
-                    val taskToBeUpdated = call.receive<TaskDto>()
+                    val taskToBeUpdated = call.receive<TaskDto<DevTaskDetails>>()
                     context.update(TASK)
                         .set(TASK.TITLE, taskToBeUpdated.title)
                         .set(TASK.DESCRIPTION, taskToBeUpdated.description)
@@ -99,7 +183,7 @@ fun Route.tasks(context: DSLContext) {
             route("/completed") {
                 get {
                     val userPrinciple = call.principal<UserPrinciple>()!!
-                    val result = context
+                    val taskList = context
                         .select()
                         .from(TASK)
                         .join(ANSWER)
@@ -108,10 +192,13 @@ fun Route.tasks(context: DSLContext) {
                         .and(ANSWER.STATUS.eq(AnswerStatus.COMPLETED))
                         .fetch()
                         .into(Task.TASK)
-                    val taskList = mutableListOf<TaskDto>()
-                    for (record in result) {
-                        taskList.add(record.toDto())
-                    }
+                        .map { taskRecord ->
+                            when (taskRecord.type) {
+                                TaskType.QUIZ -> taskRecord.toDto<QuizTaskDetails>()
+                                TaskType.DEV -> taskRecord.toDto<DevTaskDetails>()
+                                else -> throw Exception()
+                            }
+                        }
                     call.respond(HttpStatusCode.OK, taskList)
                 }
             }
