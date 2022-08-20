@@ -131,12 +131,12 @@ fun Route.tasks(context: DSLContext) {
                 }
             }
 
-            post("/{type}") {
+            post("/create/{type}") {
                 val userPrinciple = call.principal<UserPrinciple>()!!
                 if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
                     val taskToBeCreated = when (call.parameters["type"]) {
-                        "dev" -> call.receive<TaskDto<DevTaskDetails>>()
-                        "quiz" -> call.receive<TaskDto<QuizTaskDetails>>()
+                        "dev" -> call.receive<PartialTaskDto<DevTaskDetails>>()
+                        "quiz" -> call.receive<PartialTaskDto<QuizTaskDetails>>()
                         else -> throw Exception()
                     }
                     val newTaskRecord = context.newRecord(TASK)
