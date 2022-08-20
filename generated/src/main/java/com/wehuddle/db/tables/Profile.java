@@ -16,9 +16,10 @@ import java.util.UUID;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSONB;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -100,6 +101,21 @@ public class Profile extends TableImpl<ProfileRecord> {
      */
     public final TableField<ProfileRecord, OffsetDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
+    /**
+     * The column <code>public.profile.bio</code>.
+     */
+    public final TableField<ProfileRecord, String> BIO = createField(DSL.name("bio"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.profile.city</code>.
+     */
+    public final TableField<ProfileRecord, String> CITY = createField(DSL.name("city"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.profile.links</code>.
+     */
+    public final TableField<ProfileRecord, JSONB> LINKS = createField(DSL.name("links"), SQLDataType.JSONB, this, "");
+
     private Profile(Name alias, Table<ProfileRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -175,11 +191,11 @@ public class Profile extends TableImpl<ProfileRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<UUID, String, String, String, String, String, String, UserRole, OffsetDateTime, OffsetDateTime> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row13<UUID, String, String, String, String, String, String, UserRole, OffsetDateTime, OffsetDateTime, String, String, JSONB> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

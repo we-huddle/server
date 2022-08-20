@@ -1,9 +1,24 @@
 package com.example.routes.auth.github.client
 
+import com.example.plugins.toObject
+import com.example.routes.tasks.DevTaskDetails
+import com.example.routes.tasks.toDto
 import com.wehuddle.db.enums.UserRole
 import com.wehuddle.db.tables.records.ProfileRecord
 import java.time.OffsetDateTime
 import java.util.UUID
+
+class ProfileLinks (
+    val github: String,
+    val linkedin: String,
+    val stackoverflow: String,
+    val twitter: String,
+)
+open class PartialProfileDto (
+    open val bio: String?,
+    open val city: String?,
+    open val links: ProfileLinks?,
+)
 
 class ProfileDto(
     val id: UUID,
@@ -16,6 +31,13 @@ class ProfileDto(
     val role: UserRole,
     val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime,
+    override val bio: String?,
+    override val city: String?,
+    override val links: ProfileLinks?,
+) : PartialProfileDto(
+    bio,
+    city,
+    links
 )
 
 fun ProfileRecord.toDto(): ProfileDto {
@@ -29,6 +51,9 @@ fun ProfileRecord.toDto(): ProfileDto {
         this.accessToken,
         this.role,
         this.createdAt,
-        this.updatedAt
+        this.updatedAt,
+        this.bio,
+        this.city,
+        this.links?.data()?.toObject(ProfileLinks::class.java),
     )
 }
