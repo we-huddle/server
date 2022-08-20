@@ -34,7 +34,6 @@ fun Route.user(context: DSLContext) {
             val profileId = UUID.fromString(call.parameters["id"]!!)
             val profile = context.fetchOne(PROFILE.where(PROFILE.ID.eq(profileId)))
             call.respond(HttpStatusCode.OK, profile!!.toDto())
-
         }
         authenticate {
             put{

@@ -14,6 +14,7 @@ class ProfileLinks (
     val stackoverflow: String,
     val twitter: String,
 )
+
 open class PartialProfileDto (
     open val bio: String?,
     open val city: String?,
