@@ -1,6 +1,7 @@
 package com.example.routes.githubEvents
 
 import com.example.plugins.toJsonB
+import com.example.routes.tasks.DevTaskDetails
 import com.example.routes.tasks.toDto
 import com.wehuddle.db.enums.AnswerStatus
 import com.wehuddle.db.enums.IssueState
@@ -145,7 +146,7 @@ fun handlePullRequestEventTrigger(pullRequestEvent: PullRequestEventPayload, con
                 .and(ANSWER.ID.isNull)
                 .fetchInto(TASK)
                 .toList()
-                .map { taskRecord -> taskRecord.toDto() }
+                .map { taskRecord -> taskRecord.toDto<DevTaskDetails>() }
             for (task in incompleteDevTasks) {
                 if (task.details.noOfPulls <= prCount) {
                     val newAnswer = transactionContext.newRecord(ANSWER)
