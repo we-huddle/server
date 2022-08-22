@@ -57,6 +57,28 @@ fun Route.tasks(context: DSLContext) {
                     call.respond(HttpStatusCode.OK, response)
                 }
 
+                put ("/{type}"){
+                    val taskId = UUID.fromString(call.parameters["taskId"]!!)
+                    val userPrinciple = call.principal<UserPrinciple>()!!
+                    if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                        val taskToBeUpdated = when (call.parameters["type"]) {
+                            "dev" -> call.receive<PartialTaskDto<DevTaskDetails>>()
+                            "quiz" -> call.receive<PartialTaskDto<QuizTaskDetails>>()
+                            else -> throw Exception()
+                        }
+                        context.update(TASK)
+                            .set(TASK.TITLE, taskToBeUpdated.title)
+                            .set(TASK.DESCRIPTION, taskToBeUpdated.description)
+                            .set(TASK.DETAILS, taskToBeUpdated.details.toJsonB())
+                            .set(TASK.UPDATED_AT, OffsetDateTime.now())
+                            .where(TASK.ID.eq(taskId))
+                            .execute()
+                        call.respond(HttpStatusCode.OK)
+                    } else {
+                        call.respond(HttpStatusCode.Forbidden, "Permission denied")
+                    }
+                }
+
                 get("/agent") {
                     val userPrinciple = call.principal<UserPrinciple>()!!
                     if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
@@ -147,22 +169,6 @@ fun Route.tasks(context: DSLContext) {
                     newTaskRecord.createdAt = OffsetDateTime.now()
                     newTaskRecord.updatedAt = OffsetDateTime.now()
                     newTaskRecord.store()
-                    call.respond(HttpStatusCode.OK)
-                } else {
-                    call.respond(HttpStatusCode.Forbidden, "Permission denied")
-                }
-            }
-
-            put {
-                val userPrinciple = call.principal<UserPrinciple>()!!
-                if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
-                    val taskToBeUpdated = call.receive<TaskDto<DevTaskDetails>>()
-                    context.update(TASK)
-                        .set(TASK.TITLE, taskToBeUpdated.title)
-                        .set(TASK.DESCRIPTION, taskToBeUpdated.description)
-                        .set(TASK.DETAILS, taskToBeUpdated.details.toJsonB())
-                        .where(TASK.ID.eq(taskToBeUpdated.id))
-                        .execute()
                     call.respond(HttpStatusCode.OK)
                 } else {
                     call.respond(HttpStatusCode.Forbidden, "Permission denied")
