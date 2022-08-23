@@ -2,10 +2,12 @@ package com.example.routes.tasks
 
 import com.example.plugins.UserPrinciple
 import com.example.plugins.toJsonB
+import com.example.routes.auth.github.client.toDto
 import com.wehuddle.db.enums.AnswerStatus
 import com.wehuddle.db.enums.TaskType
 import com.wehuddle.db.enums.UserRole
 import com.wehuddle.db.tables.Answer
+import com.wehuddle.db.tables.Profile
 import com.wehuddle.db.tables.Task
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -24,6 +26,7 @@ import java.util.*
 
 private val TASK = Task.TASK
 private val ANSWER = Answer.ANSWER
+private val PROFILE = Profile.PROFILE
 
 fun Route.tasks(context: DSLContext) {
     authenticate {
@@ -55,6 +58,26 @@ fun Route.tasks(context: DSLContext) {
                         else -> throw Exception()
                     }
                     call.respond(HttpStatusCode.OK, response)
+                }
+
+
+                get("/completed/users") {
+                    val taskId = UUID.fromString(call.parameters["taskId"]!!)
+                    val existingTask = context.fetchOne(
+                        TASK.where(TASK.ID.eq(taskId))
+                    )
+                    if (existingTask == null) {
+                        call.respond(HttpStatusCode.BadRequest, "Invalid task id")
+                        return@get
+                    }
+                    val profileList = context.fetch(PROFILE.join(ANSWER).on(
+                        PROFILE.ID.eq(ANSWER.PROFILEID)
+                            .and(ANSWER.TASKID.eq(taskId))
+                            .and(ANSWER.STATUS.eq(AnswerStatus.COMPLETED))
+                    )).into(PROFILE)
+                        .toList()
+                        .map { profileRecord -> profileRecord.toDto() }
+                    call.respond(HttpStatusCode.OK, profileList)
                 }
 
                 put ("/{type}"){
