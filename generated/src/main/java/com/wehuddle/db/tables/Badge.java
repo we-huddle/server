@@ -8,6 +8,7 @@ import com.wehuddle.db.Keys;
 import com.wehuddle.db.Public;
 import com.wehuddle.db.tables.records.BadgeRecord;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -77,6 +78,16 @@ public class Badge extends TableImpl<BadgeRecord> {
      * The column <code>public.badge.dep_tasks</code>.
      */
     public final TableField<BadgeRecord, UUID[]> DEP_TASKS = createField(DSL.name("dep_tasks"), SQLDataType.UUID.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.badge.created_at</code>.
+     */
+    public final TableField<BadgeRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
+
+    /**
+     * The column <code>public.badge.updated_at</code>.
+     */
+    public final TableField<BadgeRecord, OffsetDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     private Badge(Name alias, Table<BadgeRecord> aliased) {
         this(alias, aliased, null);
@@ -153,11 +164,11 @@ public class Badge extends TableImpl<BadgeRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<UUID, String, String, String, UUID[], UUID[]> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row8<UUID, String, String, String, UUID[], UUID[], OffsetDateTime, OffsetDateTime> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

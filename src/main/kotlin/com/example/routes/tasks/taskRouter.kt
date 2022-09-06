@@ -3,6 +3,7 @@ package com.example.routes.tasks
 import com.example.plugins.UserPrinciple
 import com.example.plugins.toJsonB
 import com.example.routes.auth.github.client.toDto
+import com.example.routes.badges.BadgeFunctions
 import com.wehuddle.db.enums.AnswerStatus
 import com.wehuddle.db.enums.TaskType
 import com.wehuddle.db.enums.UserRole
@@ -59,7 +60,6 @@ fun Route.tasks(context: DSLContext) {
                     }
                     call.respond(HttpStatusCode.OK, response)
                 }
-
 
                 get("/completed/users") {
                     val taskId = UUID.fromString(call.parameters["taskId"]!!)
@@ -149,6 +149,7 @@ fun Route.tasks(context: DSLContext) {
                         newAnswer.createdAt = OffsetDateTime.now()
                         newAnswer.updatedAt = OffsetDateTime.now()
                         newAnswer.store()
+                        BadgeFunctions.findAndGrantBadges(context, profile.profileId)
                         call.respond(HttpStatusCode.OK)
                     }
 

@@ -1,6 +1,7 @@
 package com.example.routes.githubEvents
 
 import com.example.plugins.toJsonB
+import com.example.routes.badges.BadgeFunctions
 import com.example.routes.tasks.DevTaskDetails
 import com.example.routes.tasks.toDto
 import com.wehuddle.db.enums.AnswerStatus
@@ -159,6 +160,7 @@ fun handlePullRequestEventTrigger(pullRequestEvent: PullRequestEventPayload, con
                     newAnswer.store()
                 }
             }
+            BadgeFunctions.findAndGrantBadges(context, associatedProfileId)
         }
         existingPullRequest.githubPrId = pull_request.id
         existingPullRequest.title = pull_request.title

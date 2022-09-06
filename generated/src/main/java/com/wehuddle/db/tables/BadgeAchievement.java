@@ -8,6 +8,7 @@ import com.wehuddle.db.Keys;
 import com.wehuddle.db.Public;
 import com.wehuddle.db.tables.records.BadgeAchievementRecord;
 
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +17,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -62,6 +63,16 @@ public class BadgeAchievement extends TableImpl<BadgeAchievementRecord> {
      * The column <code>public.badge_achievement.badgeid</code>.
      */
     public final TableField<BadgeAchievementRecord, UUID> BADGEID = createField(DSL.name("badgeid"), SQLDataType.UUID.nullable(false), this, "");
+
+    /**
+     * The column <code>public.badge_achievement.created_at</code>.
+     */
+    public final TableField<BadgeAchievementRecord, OffsetDateTime> CREATED_AT = createField(DSL.name("created_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
+
+    /**
+     * The column <code>public.badge_achievement.updated_at</code>.
+     */
+    public final TableField<BadgeAchievementRecord, OffsetDateTime> UPDATED_AT = createField(DSL.name("updated_at"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).nullable(false).defaultValue(DSL.field("now()", SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     private BadgeAchievement(Name alias, Table<BadgeAchievementRecord> aliased) {
         this(alias, aliased, null);
@@ -151,11 +162,11 @@ public class BadgeAchievement extends TableImpl<BadgeAchievementRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<UUID, UUID, UUID> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row5<UUID, UUID, UUID, OffsetDateTime, OffsetDateTime> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

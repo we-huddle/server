@@ -3,6 +3,7 @@ package com.example.plugins
 import com.example.routes.auth.github.client.GithubClient
 import com.example.routes.auth.oidc
 import com.example.routes.auth.user
+import com.example.routes.badges.badge
 import com.example.routes.githubEvents.githubEvents
 import com.example.routes.leaderboard.leaderboard
 import com.example.routes.session.session
@@ -74,6 +75,7 @@ fun Application.configureRouting(
         tasks(context)
         sprints(context)
         leaderboard(context)
+        badge(context)
     }
     intercept(ApplicationCallPipeline.Monitoring) {
         interceptExceptions(this, LoggerFactory.getLogger(Application::class.java))
