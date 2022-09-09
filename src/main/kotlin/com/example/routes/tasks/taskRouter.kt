@@ -232,6 +232,30 @@ fun Route.tasks(context: DSLContext) {
                     call.respond(HttpStatusCode.OK, taskList)
                 }
             }
+
+            route("/completedByUser/{profileId}") {
+                get {
+                    val userPrinciple = call.principal<UserPrinciple>()!!
+                    val profileId = UUID.fromString(call.parameters["profileId"]!!)
+                    val taskList = context
+                        .select()
+                        .from(TASK)
+                        .join(ANSWER)
+                        .on(TASK.ID.eq(ANSWER.TASKID))
+                        .where(ANSWER.PROFILEID.eq(profileId))
+                        .and(ANSWER.STATUS.eq(AnswerStatus.COMPLETED))
+                        .fetch()
+                        .into(Task.TASK)
+                        .map { taskRecord ->
+                            when (taskRecord.type) {
+                                TaskType.QUIZ -> taskRecord.toDto<QuizTaskDetails>()
+                                TaskType.DEV -> taskRecord.toDto<DevTaskDetails>()
+                                else -> throw Exception()
+                            }
+                        }
+                    call.respond(HttpStatusCode.OK, taskList)
+                }
+            }
         }
     }
 }
