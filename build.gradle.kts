@@ -85,4 +85,5 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     runtimeOnly("org.postgresql:postgresql:42.3.6")
     implementation("com.google.code.gson:gson:2.9.1")
+    implementation("aws.sdk.kotlin:s3:0.17.5-beta")
 }
