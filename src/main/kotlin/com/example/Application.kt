@@ -23,6 +23,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory
 const val ENV_GITHUB_CLIENT_ID = "GITHUB_CLIENT_ID"
 const val ENV_GITHUB_CLIENT_SECRET = "GITHUB_CLIENT_SECRET"
 const val ENV_CLIENT_URL = "CLIENT_URL"
+const val ENV_DATA_BUCKET_NAME = "DATA_BUCKET_NAME"
 
 fun configureGithubClient(
     clientId: String = System.getenv(ENV_GITHUB_CLIENT_ID),
@@ -41,11 +42,17 @@ fun main() {
         val datasource = configureHikariDataSource()
         val context = DSL.using(datasource, SQLDialect.POSTGRES)
         val clientUrl = System.getenv(ENV_CLIENT_URL)
+        val dataBucketName = System.getenv(ENV_DATA_BUCKET_NAME)
         performDBMigration(datasource)
 
         configureSecurity(context)
         configureHTTP()
-        configureRouting(context, configureGithubClient(), clientUrl)
+        configureRouting(
+            context,
+            configureGithubClient(),
+            clientUrl,
+            dataBucketName
+        )
 
         install(ContentNegotiation) {
             val mapper = ObjectMapper()

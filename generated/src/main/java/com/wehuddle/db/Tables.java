@@ -5,6 +5,8 @@ package com.wehuddle.db;
 
 
 import com.wehuddle.db.tables.Answer;
+import com.wehuddle.db.tables.Badge;
+import com.wehuddle.db.tables.BadgeAchievement;
 import com.wehuddle.db.tables.FlywaySchemaHistory;
 import com.wehuddle.db.tables.Issue;
 import com.wehuddle.db.tables.IssueAssignment;
@@ -26,6 +28,16 @@ public class Tables {
      * The table <code>public.answer</code>.
      */
     public static final Answer ANSWER = Answer.ANSWER;
+
+    /**
+     * The table <code>public.badge</code>.
+     */
+    public static final Badge BADGE = Badge.BADGE;
+
+    /**
+     * The table <code>public.badge_achievement</code>.
+     */
+    public static final BadgeAchievement BADGE_ACHIEVEMENT = BadgeAchievement.BADGE_ACHIEVEMENT;
 
     /**
      * The table <code>public.flyway_schema_history</code>.

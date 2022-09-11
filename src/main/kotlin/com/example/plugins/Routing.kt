@@ -3,6 +3,8 @@ package com.example.plugins
 import com.example.routes.auth.github.client.GithubClient
 import com.example.routes.auth.oidc
 import com.example.routes.auth.user
+import com.example.routes.badges.badge
+import com.example.routes.dataBucket.dataBucket
 import com.example.routes.githubEvents.githubEvents
 import com.example.routes.leaderboard.leaderboard
 import com.example.routes.session.session
@@ -64,7 +66,8 @@ class RestException(val errorResource: ErrorResource) : Exception(errorResource.
 fun Application.configureRouting(
     context: DSLContext? = null,
     githubClient: GithubClient? = null,
-    clientUrl: String? = null
+    clientUrl: String? = null,
+    dataBucketName: String? = null
 ) {
     routing {
         oidc(context!!, githubClient!!, clientUrl!!)
@@ -74,6 +77,8 @@ fun Application.configureRouting(
         tasks(context)
         sprints(context)
         leaderboard(context)
+        badge(context)
+        dataBucket(dataBucketName!!)
     }
     intercept(ApplicationCallPipeline.Monitoring) {
         interceptExceptions(this, LoggerFactory.getLogger(Application::class.java))
