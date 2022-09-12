@@ -10,6 +10,7 @@ import com.example.routes.leaderboard.leaderboard
 import com.example.routes.session.session
 import com.example.routes.sprints.sprints
 import com.example.routes.tasks.tasks
+import com.example.routes.notifications.notifications
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
@@ -79,6 +80,7 @@ fun Application.configureRouting(
         leaderboard(context)
         badge(context)
         dataBucket(dataBucketName!!)
+        notifications(context)
     }
     intercept(ApplicationCallPipeline.Monitoring) {
         interceptExceptions(this, LoggerFactory.getLogger(Application::class.java))

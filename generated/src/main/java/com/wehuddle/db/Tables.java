@@ -10,6 +10,7 @@ import com.wehuddle.db.tables.BadgeAchievement;
 import com.wehuddle.db.tables.FlywaySchemaHistory;
 import com.wehuddle.db.tables.Issue;
 import com.wehuddle.db.tables.IssueAssignment;
+import com.wehuddle.db.tables.Notification;
 import com.wehuddle.db.tables.Profile;
 import com.wehuddle.db.tables.PullRequest;
 import com.wehuddle.db.tables.Session;
@@ -53,6 +54,11 @@ public class Tables {
      * The table <code>public.issue_assignment</code>.
      */
     public static final IssueAssignment ISSUE_ASSIGNMENT = IssueAssignment.ISSUE_ASSIGNMENT;
+
+    /**
+     * The table <code>public.notification</code>.
+     */
+    public static final Notification NOTIFICATION = Notification.NOTIFICATION;
 
     /**
      * The table <code>public.profile</code>.
