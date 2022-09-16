@@ -235,7 +235,6 @@ fun Route.tasks(context: DSLContext) {
 
             route("/completedByUser/{profileId}") {
                 get {
-                    val userPrinciple = call.principal<UserPrinciple>()!!
                     val profileId = UUID.fromString(call.parameters["profileId"]!!)
                     val taskList = context
                         .select()
@@ -244,6 +243,7 @@ fun Route.tasks(context: DSLContext) {
                         .on(TASK.ID.eq(ANSWER.TASKID))
                         .where(ANSWER.PROFILEID.eq(profileId))
                         .and(ANSWER.STATUS.eq(AnswerStatus.COMPLETED))
+                        .orderBy(ANSWER.CREATED_AT.desc())
                         .fetch()
                         .into(Task.TASK)
                         .map { taskRecord ->
