@@ -7,6 +7,7 @@ import com.example.routes.badges.badge
 import com.example.routes.dataBucket.dataBucket
 import com.example.routes.githubEvents.githubEvents
 import com.example.routes.leaderboard.leaderboard
+import com.example.routes.pullRequests.pullRequests
 import com.example.routes.session.session
 import com.example.routes.sprints.sprints
 import com.example.routes.tasks.tasks
@@ -79,6 +80,7 @@ fun Application.configureRouting(
         leaderboard(context)
         badge(context)
         dataBucket(dataBucketName!!)
+        pullRequests(context)
     }
     intercept(ApplicationCallPipeline.Monitoring) {
         interceptExceptions(this, LoggerFactory.getLogger(Application::class.java))
