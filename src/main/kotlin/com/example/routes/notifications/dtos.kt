@@ -7,6 +7,7 @@ import com.wehuddle.db.enums.NotificationType
 
 open class PartialNotificationDto(
     open val profileId: UUID,
+    open val linkId: UUID,
     open val title: String,
     open val description: String,
     open val type: NotificationType
@@ -15,6 +16,7 @@ open class PartialNotificationDto(
 class NotificationDto(
     val id: UUID,
     override val profileId: UUID,
+    override val linkId: UUID,
     override val title: String,
     override val description: String,
     override val type: NotificationType,
@@ -23,6 +25,7 @@ class NotificationDto(
     val updated_at: OffsetDateTime
 ) : PartialNotificationDto (
     profileId,
+    linkId,
     title,
     description,
     type
@@ -31,6 +34,7 @@ class NotificationDto(
 fun NotificationRecord.toDto() = NotificationDto (
     this.id,
     this.profileid,
+    this.linkid,
     this.title,
     this.description,
     this.type,

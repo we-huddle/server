@@ -6,6 +6,7 @@ CREATE TABLE notification
 (
     id              UUID                    NOT NULL DEFAULT uuid_generate_v4(),
     profileId       UUID                    NOT NULL,
+    linkId          UUID                    NOT NULL,
     type            NOTIFICATION_TYPE       NOT NULL,
     title           TEXT                    NOT NULL,
     description     TEXT                    NOT NULL,

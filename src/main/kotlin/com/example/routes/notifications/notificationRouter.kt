@@ -54,6 +54,7 @@ fun Route.notifications(context: DSLContext) {
 fun addNotification(notification: PartialNotificationDto, context: DSLContext){
     val newNotification = context.newRecord(NOTIFICATION)
     newNotification.profileid = notification.profileId
+    newNotification.linkid = notification.linkId
     newNotification.title = notification.title
     newNotification.description = notification.description
     newNotification.type  = notification.type

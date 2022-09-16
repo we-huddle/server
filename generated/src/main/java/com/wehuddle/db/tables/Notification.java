@@ -18,7 +18,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -59,6 +59,11 @@ public class Notification extends TableImpl<NotificationRecord> {
      * The column <code>public.notification.profileid</code>.
      */
     public final TableField<NotificationRecord, UUID> PROFILEID = createField(DSL.name("profileid"), SQLDataType.UUID.nullable(false), this, "");
+
+    /**
+     * The column <code>public.notification.linkid</code>.
+     */
+    public final TableField<NotificationRecord, UUID> LINKID = createField(DSL.name("linkid"), SQLDataType.UUID.nullable(false), this, "");
 
     /**
      * The column <code>public.notification.type</code>.
@@ -174,11 +179,11 @@ public class Notification extends TableImpl<NotificationRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<UUID, UUID, NotificationType, String, String, Boolean, OffsetDateTime, OffsetDateTime> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<UUID, UUID, UUID, NotificationType, String, String, Boolean, OffsetDateTime, OffsetDateTime> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

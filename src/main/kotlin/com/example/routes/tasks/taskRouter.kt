@@ -144,7 +144,7 @@ fun Route.tasks(context: DSLContext) {
                         }
                         val score = (count.toDouble()/task.details.questions.size)*100
                         if (score >= task.details.passMark) {
-                            val notification = PartialNotificationDto(profile.profileId, "${task.title} completed", "Congratulations on completing ${task.title}!" , NotificationType.TASK )
+                            val notification = PartialNotificationDto(profile.profileId, task.id, "${task.title} completed", "Congratulations on completing ${task.title}!" , NotificationType.TASK )
                             addNotification(notification, context)
                         }
                         val newAnswer = context.newRecord(ANSWER)
