@@ -140,7 +140,8 @@ fun Route.tasks(context: DSLContext) {
                         var count = 0
                         for (question in task.details.questions) {
                             val givenAnswer = answers[question.number]
-                            if (givenAnswer == question.correctAnswerKey) count++
+                            if (givenAnswer == question.correctAnswerKey)
+                                count += question.answerWeightKey.toInt()
                         }
                         val score = (count.toDouble()/task.details.questions.size)*100
                         if (score >= task.details.passMark) {
@@ -210,6 +211,7 @@ fun Route.tasks(context: DSLContext) {
                 val userPrinciple = call.principal<UserPrinciple>()!!
                 if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
                     val taskIDToBeDeleted = UUID.fromString(call.parameters["id"]!!)
+                    context.deleteFrom(ANSWER).where(ANSWER.TASKID.eq(taskIDToBeDeleted)).execute()
                     context.deleteFrom(TASK).where(TASK.ID.eq(taskIDToBeDeleted)).execute()
                     call.respond(HttpStatusCode.OK)
                 } else {
