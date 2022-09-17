@@ -22,6 +22,7 @@ class Question(
     number: Int,
     question: String,
     val correctAnswerKey: String,
+    val answerWeightKey: String,
     options: Map<String, String>,
 ): PartialQuestion(
     number,
@@ -36,6 +37,8 @@ class PartialQuizTaskDetails(
 
 class QuizTaskDetails(
     val passMark: Double,
+    val questionPoints : Double,
+    val pointsToPass: Double,
     val questions: List<Question>,
 )
 
