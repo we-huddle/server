@@ -15,7 +15,7 @@ private val PULL_REQUEST = PullRequest.PULL_REQUEST
 
 fun Route.pullRequests(context: DSLContext){
     authenticate {
-        route("/pullRequests/{profileId}"){
+        route("/pullRequests/merged/byUser/{profileId}"){
 
             get {
                 val profileId = UUID.fromString(call.parameters["profileId"]!!)
@@ -23,6 +23,7 @@ fun Route.pullRequests(context: DSLContext){
                     .select(PULL_REQUEST.asterisk())
                     .from (PULL_REQUEST)
                     .where(PULL_REQUEST.PROFILE_ID.eq(profileId))
+                    .and (PULL_REQUEST.MERGED)
                     .orderBy(PULL_REQUEST.OPENED_AT.desc())
                     .fetchInto(PULL_REQUEST)
                     .toList()
