@@ -2,12 +2,11 @@ package com.example.routes.githubEvents
 
 import com.example.plugins.toJsonB
 import com.example.routes.badges.BadgeFunctions
+import com.example.routes.notifications.PartialNotificationDto
+import com.example.routes.notifications.addNotification
 import com.example.routes.tasks.DevTaskDetails
 import com.example.routes.tasks.toDto
-import com.wehuddle.db.enums.AnswerStatus
-import com.wehuddle.db.enums.IssueState
-import com.wehuddle.db.enums.PrState
-import com.wehuddle.db.enums.TaskType
+import com.wehuddle.db.enums.*
 import com.wehuddle.db.tables.Answer
 import com.wehuddle.db.tables.Issue
 import com.wehuddle.db.tables.IssueAssignment
@@ -150,6 +149,9 @@ fun handlePullRequestEventTrigger(pullRequestEvent: PullRequestEventPayload, con
                 .map { taskRecord -> taskRecord.toDto<DevTaskDetails>() }
             for (task in incompleteDevTasks) {
                 if (task.details.noOfPulls <= prCount) {
+                    val notification = PartialNotificationDto(associatedProfileId, task.id, "${task.title} completed", "Congratulations on completing ${task.title}!" , NotificationType.TASK )
+                    addNotification(notification, context)
+
                     val newAnswer = transactionContext.newRecord(ANSWER)
                     newAnswer.profileid = associatedProfileId
                     newAnswer.taskid = task.id

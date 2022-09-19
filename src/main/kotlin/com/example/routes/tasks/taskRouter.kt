@@ -4,8 +4,11 @@ import com.example.plugins.UserPrinciple
 import com.example.plugins.toJsonB
 import com.example.routes.auth.github.client.toDto
 import com.example.routes.badges.BadgeFunctions
+import com.example.routes.notifications.PartialNotificationDto
+import com.example.routes.notifications.addNotification
 import com.wehuddle.db.enums.AnswerStatus
 import com.wehuddle.db.enums.TaskType
+import com.wehuddle.db.enums.NotificationType
 import com.wehuddle.db.enums.UserRole
 import com.wehuddle.db.tables.Answer
 import com.wehuddle.db.tables.Profile
@@ -140,6 +143,10 @@ fun Route.tasks(context: DSLContext) {
                             if (givenAnswer == question.correctAnswerKey) count++
                         }
                         val score = (count.toDouble()/task.details.questions.size)*100
+                        if (score >= task.details.passMark) {
+                            val notification = PartialNotificationDto(profile.profileId, task.id, "${task.title} completed", "Congratulations on completing ${task.title}!" , NotificationType.TASK )
+                            addNotification(notification, context)
+                        }
                         val newAnswer = context.newRecord(ANSWER)
                         newAnswer.taskid = task.id
                         newAnswer.status = if (score >= task.details.passMark)

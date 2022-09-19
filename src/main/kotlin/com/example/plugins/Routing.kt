@@ -11,6 +11,7 @@ import com.example.routes.pullRequests.pullRequests
 import com.example.routes.session.session
 import com.example.routes.sprints.sprints
 import com.example.routes.tasks.tasks
+import com.example.routes.notifications.notifications
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
@@ -80,6 +81,7 @@ fun Application.configureRouting(
         leaderboard(context)
         badge(context)
         dataBucket(dataBucketName!!)
+        notifications(context)
         pullRequests(context)
     }
     intercept(ApplicationCallPipeline.Monitoring) {
