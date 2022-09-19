@@ -12,10 +12,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.route
+import io.ktor.server.routing.*
 import java.time.OffsetDateTime
 import java.util.UUID
 import org.jooq.DSLContext
@@ -67,6 +64,24 @@ fun Route.sprints(context: DSLContext) {
                         return@get
                     }
                     call.respond(HttpStatusCode.OK, existingSprint.toDto())
+                }
+
+                put {
+                    val sprintId = UUID.fromString(call.parameters["sprintId"]!!)
+                    val userPrinciple = call.principal<UserPrinciple>()!!
+                    if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                        val sprintToBeUpdated = call.receive<PartialSprintDto>()
+                        context.update(SPRINT)
+                            .set(SPRINT.TITLE, sprintToBeUpdated.title)
+                            .set(SPRINT.DESCRIPTION, sprintToBeUpdated.description)
+                            .set(SPRINT.DEADLINE, sprintToBeUpdated.deadline)
+                            .set(SPRINT.UPDATED_AT, OffsetDateTime.now())
+                            .where(SPRINT.ID.eq(sprintId))
+                            .execute()
+                        call.respond(HttpStatusCode.OK)
+                    } else {
+                        call.respond(HttpStatusCode.Forbidden, "Permission denied")
+                    }
                 }
 
                 route("/issues") {
