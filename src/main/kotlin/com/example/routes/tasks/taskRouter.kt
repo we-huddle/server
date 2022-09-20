@@ -137,13 +137,13 @@ fun Route.tasks(context: DSLContext) {
                             return@post
                         }
                         val answers = answerPayload.answers
-                        var count = 0
+                        var totalPoints = 0
                         for (question in task.details.questions) {
                             val givenAnswer = answers[question.number]
                             if (givenAnswer == question.correctAnswerKey)
-                                count += question.answerWeightKey.toInt()
+                                totalPoints += question.answerWeightKey.toInt()
                         }
-                        val score = (count.toDouble()/task.details.questions.size)*100
+                        val score = (totalPoints.toDouble()/task.details.questionPoints)*100
                         if (score >= task.details.passMark) {
                             val notification = PartialNotificationDto(profile.profileId, task.id, "${task.title} completed", "Congratulations on completing ${task.title}!" , NotificationType.TASK )
                             addNotification(notification, context)
