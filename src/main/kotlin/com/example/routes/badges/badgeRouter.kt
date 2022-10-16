@@ -1,6 +1,7 @@
 package com.example.routes.badges
 
 import com.example.plugins.UserPrinciple
+import com.wehuddle.db.enums.AnswerStatus
 import com.wehuddle.db.enums.UserRole
 import com.wehuddle.db.tables.Answer
 import com.wehuddle.db.tables.Badge
@@ -119,17 +120,18 @@ object BadgeFunctions {
                 .and(BADGE_ACHIEVEMENT.PROFILEID.eq(profileId))
         ).into(BADGE).toList().map { badgeRecord -> badgeRecord.id }.toMutableList()
         val completedTaskIdList = context.fetch(
-            TASK.join(ANSWER).on(TASK.ID.eq(ANSWER.TASKID)).and(ANSWER.PROFILEID.eq(profileId))
+            TASK.join(ANSWER).on(TASK.ID.eq(ANSWER.TASKID))
+                .and(ANSWER.PROFILEID.eq(profileId))
+                .and(ANSWER.STATUS.eq(AnswerStatus.COMPLETED))
         ).into(TASK).toList().map { taskRecord -> taskRecord.id }
         val potentialBadgesList = context.fetch(
-            BADGE.leftJoin(BADGE_ACHIEVEMENT)
-                .on(BADGE_ACHIEVEMENT.BADGEID.eq(BADGE.ID))
-                .and(BADGE_ACHIEVEMENT.PROFILEID.notEqual(profileId))
+            BADGE.where(BADGE.ID.notIn(alreadyOwnedBadgeIdList))
         ).into(BADGE).toList().map { badgeRecord -> badgeRecord.toDto() }
         var grantedBadgeCount = 0
         for (badge in potentialBadgesList) {
             val isBadgeGrantable = alreadyOwnedBadgeIdList.containsAll(badge.depBadges)
                     && completedTaskIdList.containsAll(badge.depTasks)
+                    && !alreadyOwnedBadgeIdList.contains(badge.id)
             if (isBadgeGrantable) {
                 grantedBadgeCount++
                 alreadyOwnedBadgeIdList.add(badge.id)
