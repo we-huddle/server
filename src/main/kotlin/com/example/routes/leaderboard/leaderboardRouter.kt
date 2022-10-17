@@ -46,7 +46,7 @@ fun Route.leaderboard(context: DSLContext) {
                 .and(PULL_REQUEST.MERGED)
                 .groupBy(PULL_REQUEST.GITHUB_USER)
                 .fetch()
-            val leaderboardRecords = mutableListOf<LeaderboardRecord>();
+            val leaderboardRecords = mutableListOf<LeaderboardRecord>()
             for (record in fetchedRecords) {
                 val githubUser = (record.get(0) as JSONB).data().toObject(GithubUser::class.java)
                 val points = (record.get(1) as Int) * 10
