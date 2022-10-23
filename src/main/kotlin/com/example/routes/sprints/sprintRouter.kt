@@ -84,6 +84,23 @@ fun Route.sprints(context: DSLContext) {
                     }
                 }
 
+                delete {
+                    val sprintId = UUID.fromString(call.parameters["sprintId"]!!)
+                    val existingSprint = context.fetchOne(
+                        SPRINT.where(SPRINT.ID.eq(sprintId))
+                    )
+                    if (existingSprint == null) {
+                        call.respond(HttpStatusCode.BadRequest, "Invalid sprint id")
+                    }
+                    val userPrinciple = call.principal<UserPrinciple>()!!
+                    if(userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                        context.deleteFrom(SPRINT).where(SPRINT.ID.eq(sprintId)).execute()
+                        call.respond(HttpStatusCode.OK)
+                    } else {
+                        call.respond(HttpStatusCode.Forbidden, "Permission denied")
+                    }
+                }
+
                 route("/issues") {
                     post {
                         val userPrinciple = call.principal<UserPrinciple>()!!
