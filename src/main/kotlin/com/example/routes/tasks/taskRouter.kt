@@ -2,11 +2,13 @@ package com.example.routes.tasks
 
 import com.example.plugins.UserPrinciple
 import com.example.plugins.toJsonB
+import com.example.routes.auth.addFeedEvent
 import com.example.routes.auth.github.client.toDto
 import com.example.routes.badges.BadgeFunctions
 import com.example.routes.notifications.PartialNotificationDto
 import com.example.routes.notifications.addNotification
 import com.wehuddle.db.enums.AnswerStatus
+import com.wehuddle.db.enums.EventType
 import com.wehuddle.db.enums.TaskType
 import com.wehuddle.db.enums.NotificationType
 import com.wehuddle.db.enums.UserRole
@@ -147,6 +149,13 @@ fun Route.tasks(context: DSLContext) {
                         if (score >= task.details.passMark) {
                             val notification = PartialNotificationDto(profile.profileId, task.id, "${task.title} completed", "Congratulations on completing ${task.title}!" , NotificationType.TASK )
                             addNotification(notification, context)
+                            addFeedEvent(
+                                context = context,
+                                profileId = profile.profileId,
+                                title = "${profile.profile.name} has completed ${task.title} task",
+                                type = EventType.TASK,
+                                referenceId = task.id
+                            )
                         }
                         val newAnswer = context.newRecord(ANSWER)
                         newAnswer.taskid = task.id

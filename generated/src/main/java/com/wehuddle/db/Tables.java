@@ -7,6 +7,7 @@ package com.wehuddle.db;
 import com.wehuddle.db.tables.Answer;
 import com.wehuddle.db.tables.Badge;
 import com.wehuddle.db.tables.BadgeAchievement;
+import com.wehuddle.db.tables.FeedEvent;
 import com.wehuddle.db.tables.FlywaySchemaHistory;
 import com.wehuddle.db.tables.Issue;
 import com.wehuddle.db.tables.IssueAssignment;
@@ -17,6 +18,7 @@ import com.wehuddle.db.tables.Session;
 import com.wehuddle.db.tables.Sprint;
 import com.wehuddle.db.tables.SprintIssue;
 import com.wehuddle.db.tables.Task;
+import com.wehuddle.db.tables.UserFollower;
 
 
 /**
@@ -39,6 +41,11 @@ public class Tables {
      * The table <code>public.badge_achievement</code>.
      */
     public static final BadgeAchievement BADGE_ACHIEVEMENT = BadgeAchievement.BADGE_ACHIEVEMENT;
+
+    /**
+     * The table <code>public.feed_event</code>.
+     */
+    public static final FeedEvent FEED_EVENT = FeedEvent.FEED_EVENT;
 
     /**
      * The table <code>public.flyway_schema_history</code>.
@@ -89,4 +96,9 @@ public class Tables {
      * The table <code>public.task</code>.
      */
     public static final Task TASK = Task.TASK;
+
+    /**
+     * The table <code>public.user_follower</code>.
+     */
+    public static final UserFollower USER_FOLLOWER = UserFollower.USER_FOLLOWER;
 }

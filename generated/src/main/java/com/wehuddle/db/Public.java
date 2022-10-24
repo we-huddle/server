@@ -7,6 +7,7 @@ package com.wehuddle.db;
 import com.wehuddle.db.tables.Answer;
 import com.wehuddle.db.tables.Badge;
 import com.wehuddle.db.tables.BadgeAchievement;
+import com.wehuddle.db.tables.FeedEvent;
 import com.wehuddle.db.tables.FlywaySchemaHistory;
 import com.wehuddle.db.tables.Issue;
 import com.wehuddle.db.tables.IssueAssignment;
@@ -17,6 +18,7 @@ import com.wehuddle.db.tables.Session;
 import com.wehuddle.db.tables.Sprint;
 import com.wehuddle.db.tables.SprintIssue;
 import com.wehuddle.db.tables.Task;
+import com.wehuddle.db.tables.UserFollower;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +56,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.badge_achievement</code>.
      */
     public final BadgeAchievement BADGE_ACHIEVEMENT = BadgeAchievement.BADGE_ACHIEVEMENT;
+
+    /**
+     * The table <code>public.feed_event</code>.
+     */
+    public final FeedEvent FEED_EVENT = FeedEvent.FEED_EVENT;
 
     /**
      * The table <code>public.flyway_schema_history</code>.
@@ -106,6 +113,11 @@ public class Public extends SchemaImpl {
     public final Task TASK = Task.TASK;
 
     /**
+     * The table <code>public.user_follower</code>.
+     */
+    public final UserFollower USER_FOLLOWER = UserFollower.USER_FOLLOWER;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -130,6 +142,7 @@ public class Public extends SchemaImpl {
             Answer.ANSWER,
             Badge.BADGE,
             BadgeAchievement.BADGE_ACHIEVEMENT,
+            FeedEvent.FEED_EVENT,
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             Issue.ISSUE,
             IssueAssignment.ISSUE_ASSIGNMENT,
@@ -139,6 +152,7 @@ public class Public extends SchemaImpl {
             Session.SESSION,
             Sprint.SPRINT,
             SprintIssue.SPRINT_ISSUE,
-            Task.TASK);
+            Task.TASK,
+            UserFollower.USER_FOLLOWER);
     }
 }

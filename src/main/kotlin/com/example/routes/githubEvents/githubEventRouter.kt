@@ -1,6 +1,7 @@
 package com.example.routes.githubEvents
 
 import com.example.plugins.toJsonB
+import com.example.routes.auth.addFeedEvent
 import com.example.routes.badges.BadgeFunctions
 import com.example.routes.notifications.PartialNotificationDto
 import com.example.routes.notifications.addNotification
@@ -125,13 +126,13 @@ fun handlePullRequestEventTrigger(pullRequestEvent: PullRequestEventPayload, con
         val existingPullRequest = transactionContext.fetchOne(
             PULL_REQUEST.where(PULL_REQUEST.GITHUB_PR_ID.eq(pull_request.id))
         ) ?: return@transactionResult false
-        val associatedProfileId = transactionContext.fetchOne(
+        val associatedProfile = transactionContext.fetchOne(
             PROFILE.where(PROFILE.GITHUB_UNIQUE_ID.eq(pull_request.user.id.toString()))
-        )?.id
-        if (!existingPullRequest.merged && pull_request.merged && associatedProfileId != null) {
+        )
+        if (!existingPullRequest.merged && pull_request.merged && associatedProfile != null) {
             val prCount = transactionContext
                 .fetchCount(
-                    PULL_REQUEST.where(PULL_REQUEST.PROFILE_ID.eq(associatedProfileId).and(PULL_REQUEST.MERGED))
+                    PULL_REQUEST.where(PULL_REQUEST.PROFILE_ID.eq(associatedProfile.id).and(PULL_REQUEST.MERGED))
                 ) + 1
             val incompleteDevTasks = transactionContext
                 .select(TASK.asterisk())
@@ -139,7 +140,7 @@ fun handlePullRequestEventTrigger(pullRequestEvent: PullRequestEventPayload, con
                 .leftJoin(ANSWER)
                 .on(
                     TASK.ID.eq(ANSWER.TASKID)
-                        .and(ANSWER.PROFILEID.eq(associatedProfileId))
+                        .and(ANSWER.PROFILEID.eq(associatedProfile.id))
                         .and(ANSWER.STATUS.eq(AnswerStatus.COMPLETED))
                 )
                 .where(TASK.TYPE.eq(TaskType.DEV))
@@ -149,11 +150,17 @@ fun handlePullRequestEventTrigger(pullRequestEvent: PullRequestEventPayload, con
                 .map { taskRecord -> taskRecord.toDto<DevTaskDetails>() }
             for (task in incompleteDevTasks) {
                 if (task.details.noOfPulls <= prCount) {
-                    val notification = PartialNotificationDto(associatedProfileId, task.id, "${task.title} completed", "Congratulations on completing ${task.title}!" , NotificationType.TASK )
+                    val notification = PartialNotificationDto(associatedProfile.id, task.id, "${task.title} completed", "Congratulations on completing ${task.title}!" , NotificationType.TASK )
                     addNotification(notification, context)
-
+                    addFeedEvent(
+                        context = context,
+                        profileId = associatedProfile.id,
+                        title = "${associatedProfile.name} has completed ${task.title} task",
+                        type = com.wehuddle.db.enums.EventType.TASK,
+                        referenceId = task.id
+                    )
                     val newAnswer = transactionContext.newRecord(ANSWER)
-                    newAnswer.profileid = associatedProfileId
+                    newAnswer.profileid = associatedProfile.id
                     newAnswer.taskid = task.id
                     newAnswer.status = AnswerStatus.COMPLETED
                     newAnswer.details = task.details.toJsonB()
@@ -162,7 +169,7 @@ fun handlePullRequestEventTrigger(pullRequestEvent: PullRequestEventPayload, con
                     newAnswer.store()
                 }
             }
-            BadgeFunctions.findAndGrantBadges(context, associatedProfileId)
+            BadgeFunctions.findAndGrantBadges(context, associatedProfile.id)
         }
         existingPullRequest.githubPrId = pull_request.id
         existingPullRequest.title = pull_request.title

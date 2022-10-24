@@ -3,10 +3,14 @@ package com.example.routes.auth.github.client
 import com.example.plugins.toObject
 import com.example.routes.tasks.DevTaskDetails
 import com.example.routes.tasks.toDto
+import com.wehuddle.db.enums.EventType
 import com.wehuddle.db.enums.UserRole
+import com.wehuddle.db.tables.Profile.PROFILE
+import com.wehuddle.db.tables.records.FeedEventRecord
 import com.wehuddle.db.tables.records.ProfileRecord
 import java.time.OffsetDateTime
 import java.util.UUID
+import org.jooq.DSLContext
 
 class ProfileLinks (
     val github: String,
@@ -56,5 +60,27 @@ fun ProfileRecord.toDto(): ProfileDto {
         this.bio,
         this.city,
         this.links?.data()?.toObject(ProfileLinks::class.java),
+    )
+}
+
+class FeedEventDto(
+    val id: UUID,
+    val profile: ProfileDto,
+    val title: String,
+    val type: EventType,
+    val referenceId: UUID,
+    val createdAt: OffsetDateTime,
+    val updatedAt: OffsetDateTime,
+)
+
+fun FeedEventRecord.toDto(context: DSLContext): FeedEventDto {
+    return FeedEventDto(
+        id = this.id,
+        profile = context.fetchOne(PROFILE.where(PROFILE.ID.eq(this.profileid)))!!.toDto(),
+        title = this.title,
+        type = this.type,
+        referenceId = this.referenceid,
+        createdAt = this.createdAt,
+        updatedAt = this.updatedAt
     )
 }
