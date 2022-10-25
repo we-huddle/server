@@ -16,10 +16,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.route
+import io.ktor.server.routing.*
 import java.time.OffsetDateTime
 import java.util.*
 import org.jooq.DSLContext
@@ -84,6 +81,24 @@ fun Route.badge(context: DSLContext) {
                         return@get
                     }
                     call.respond(HttpStatusCode.OK, badge.toBadgeWithDependenciesDto(context))
+                }
+
+                put {
+                    val badgeId = UUID.fromString(call.parameters["badgeId"]!!)
+                    val userPrinciple = call.principal<UserPrinciple>()!!
+                    if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                        val badgeToBeUpdated = call.receive<EditBadgeDTO>()
+                        context.update(BADGE)
+                            .set(BADGE.TITLE, badgeToBeUpdated.title)
+                            .set(BADGE.DESCRIPTION, badgeToBeUpdated.description)
+                            .set(BADGE.PHOTO, badgeToBeUpdated.photo)
+                            .set(BADGE.UPDATED_AT, OffsetDateTime.now())
+                            .where(BADGE.ID.eq(badgeId))
+                            .execute()
+                        call.respond(HttpStatusCode.OK)
+                    } else {
+                        call.respond(HttpStatusCode.Forbidden, "Permission denied")
+                    }
                 }
             }
 
