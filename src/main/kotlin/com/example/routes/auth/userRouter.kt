@@ -4,8 +4,12 @@ import com.example.routes.auth.github.client.toDto
 import com.example.plugins.UserPrinciple
 import com.example.plugins.toJsonB
 import com.example.routes.auth.github.client.PartialProfileDto
+<<<<<<< Updated upstream
 import com.wehuddle.db.enums.EventType
 import com.wehuddle.db.tables.FeedEvent.FEED_EVENT
+=======
+import com.wehuddle.db.enums.UserRole
+>>>>>>> Stashed changes
 import com.wehuddle.db.tables.Profile
 import com.wehuddle.db.tables.UserFollower.USER_FOLLOWER
 import io.ktor.http.HttpStatusCode
@@ -22,6 +26,8 @@ import io.ktor.server.routing.route
 import java.time.OffsetDateTime
 import org.jooq.DSLContext
 import java.util.*
+import com.wehuddle.db.tables.records.ProfileRecord
+import java.time.OffsetDateTime
 
 private val PROFILE = Profile.PROFILE
 
@@ -32,6 +38,7 @@ fun Route.user(context: DSLContext) {
                 val userPrinciple = call.principal<UserPrinciple>()!!
                 call.respond(HttpStatusCode.OK, userPrinciple.profile.toDto())
             }
+<<<<<<< Updated upstream
 
             get("/feed-events") {
                 val userPrinciple = call.principal<UserPrinciple>()!!
@@ -95,6 +102,26 @@ fun Route.user(context: DSLContext) {
                         return@post
                     }
                     existingFollowRecord.delete()
+=======
+            get("/allUsers") {
+                val userList = context.fetch(PROFILE).toList().map { ProfileRecord -> ProfileRecord.toDto() }
+                call.respond(HttpStatusCode.OK, userList)
+            }
+            put("updateRole/{id}") {
+                val profileId = UUID.fromString(call.parameters["id"]!!)
+                val userPrinciple = call.principal<UserPrinciple>()!!
+                if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                    context.update(PROFILE)
+                        .set(PROFILE.ROLE, UserRole.HUDDLER)
+                        .where(PROFILE.ID.eq(profileId))
+                        .execute()
+                    call.respond(HttpStatusCode.OK)
+                } else {
+                    context.update(PROFILE)
+                        .set(PROFILE.ROLE, UserRole.HUDDLE_AGENT)
+                        .where(PROFILE.ID.eq(profileId))
+                        .execute()
+>>>>>>> Stashed changes
                     call.respond(HttpStatusCode.OK)
                 }
             }
