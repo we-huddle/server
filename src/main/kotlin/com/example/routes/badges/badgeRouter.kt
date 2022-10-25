@@ -1,9 +1,11 @@
 package com.example.routes.badges
 
 import com.example.plugins.UserPrinciple
+import com.example.routes.auth.addFeedEvent
 import com.example.routes.notifications.PartialNotificationDto
 import com.example.routes.notifications.addNotification
 import com.wehuddle.db.enums.AnswerStatus
+import com.wehuddle.db.enums.EventType
 import com.wehuddle.db.enums.NotificationType
 import com.wehuddle.db.enums.UserRole
 import com.wehuddle.db.tables.Answer
@@ -163,6 +165,13 @@ object BadgeFunctions {
 
                 val notification = PartialNotificationDto(profileId, badge.id, "${badge.title} achieved", "Congratulations on achieving ${badge.title}!" , NotificationType.BADGE )
                 addNotification(notification, context)
+                addFeedEvent(
+                    context = context,
+                    profileId = profileId,
+                    title = "New badge achieved, ${badge.title}",
+                    type = EventType.BADGE,
+                    referenceId = badge.id
+                )
             }
         }
         return grantedBadgeCount
