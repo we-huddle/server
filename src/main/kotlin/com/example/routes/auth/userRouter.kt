@@ -59,6 +59,14 @@ fun Route.user(context: DSLContext) {
                         call.respond(HttpStatusCode.BadRequest, "Invalid profile id")
                         return@post
                     }
+                    val existingFollowRecord = context.fetchOne(
+                        USER_FOLLOWER.where(USER_FOLLOWER.PROFILEID.eq(userPrinciple.profileId)
+                            .and(USER_FOLLOWER.FOLLOWS.eq(toFollowProfile.id)))
+                    )
+                    if (existingFollowRecord != null) {
+                        call.respond(HttpStatusCode.BadRequest, "Invalid follower id")
+                        return@post
+                    }
                     val followerRecord = context.newRecord(USER_FOLLOWER)
                     followerRecord.profileid = userPrinciple.profileId
                     followerRecord.follows = toFollowProfile.id
@@ -110,8 +118,8 @@ fun Route.user(context: DSLContext) {
             val followerList = context.fetch(
                 USER_FOLLOWER
                     .join(PROFILE)
-                    .on(PROFILE.ID.eq(USER_FOLLOWER.FOLLOWS))
-                    .where(USER_FOLLOWER.PROFILEID.eq(profileId))
+                    .on(PROFILE.ID.eq(USER_FOLLOWER.PROFILEID))
+                    .where(USER_FOLLOWER.FOLLOWS.eq(profileId))
             ).into(PROFILE).toList().map { it.toDto() }
             call.respond(HttpStatusCode.OK, followerList)
         }
