@@ -78,7 +78,7 @@ fun Route.user(context: DSLContext) {
                         profileId = profileId,
                         title = "${userPrinciple.profile.name} has started following ${toFollowProfile.name}",
                         type = EventType.FOLLOWER,
-                        referenceId = userPrinciple.profileId
+                        referenceId = toFollowProfile.id
                     )
                     call.respond(HttpStatusCode.OK)
                 }
