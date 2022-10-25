@@ -242,28 +242,54 @@ fun Route.tasks(context: DSLContext) {
                 }
             }
 
-            route("/completedByUser/{profileId}") {
-                get {
-                    val profileId = UUID.fromString(call.parameters["profileId"]!!)
-                    val taskList = context
-                        .select()
-                        .from(TASK)
-                        .join(ANSWER)
-                        .on(TASK.ID.eq(ANSWER.TASKID))
-                        .where(ANSWER.PROFILEID.eq(profileId))
-                        .and(ANSWER.STATUS.eq(AnswerStatus.COMPLETED))
-                        .orderBy(ANSWER.CREATED_AT.desc())
-                        .fetch()
-                        .into(Task.TASK)
-                        .map { taskRecord ->
-                            when (taskRecord.type) {
-                                TaskType.QUIZ -> taskRecord.toDto<QuizTaskDetails>()
-                                TaskType.DEV -> taskRecord.toDto<DevTaskDetails>()
-                                else -> throw Exception()
-                            }
+
+        }
+    }
+    route("/tasks") {
+        route("/completedByUser/{profileId}") {
+            get {
+                val profileId = UUID.fromString(call.parameters["profileId"]!!)
+                val taskList = context
+                    .select()
+                    .from(TASK)
+                    .join(ANSWER)
+                    .on(TASK.ID.eq(ANSWER.TASKID))
+                    .where(ANSWER.PROFILEID.eq(profileId))
+                    .and(ANSWER.STATUS.eq(AnswerStatus.COMPLETED))
+                    .orderBy(ANSWER.CREATED_AT.desc())
+                    .fetch()
+                    .into(Task.TASK)
+                    .map { taskRecord ->
+                        when (taskRecord.type) {
+                            TaskType.QUIZ -> taskRecord.toDto<QuizTaskDetails>()
+                            TaskType.DEV -> taskRecord.toDto<DevTaskDetails>()
+                            else -> throw Exception()
                         }
-                    call.respond(HttpStatusCode.OK, taskList)
+                    }
+                call.respond(HttpStatusCode.OK, taskList)
+            }
+        }
+        route("/{taskId}/completedByUser/{profileId}/answer"){
+            get {
+                val profileId = UUID.fromString(call.parameters["profileId"]!!)
+                val taskId = UUID.fromString(call.parameters["taskId"]!!)
+                val existingTask = context.fetchOne(
+                    TASK.where(TASK.ID.eq(taskId))
+                )
+                if (existingTask == null) {
+                    call.respond(HttpStatusCode.BadRequest, "Invalid task id")
+                    return@get
                 }
+                val answerList = context.fetch(
+                    ANSWER.where(ANSWER.TASKID.eq(taskId).and(ANSWER.PROFILEID.eq(profileId)))
+                ).toList().map { answerRecord ->
+                    when (existingTask.type) {
+                        TaskType.DEV -> answerRecord.toDto<DevTaskDetails>()
+                        TaskType.QUIZ -> answerRecord.toDto<QuizAnswerPayload>()
+                        else -> throw Exception()
+                    }
+                }
+                call.respond(HttpStatusCode.OK, answerList)
             }
         }
     }

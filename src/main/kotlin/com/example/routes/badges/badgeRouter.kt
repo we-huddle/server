@@ -70,11 +70,6 @@ fun Route.badge(context: DSLContext) {
                 call.respond(HttpStatusCode.OK, badge.toDto())
             }
 
-            get {
-                val badgeList = context.fetch(BADGE).toList().map { badgeRecord -> badgeRecord.toDto() }
-                call.respond(HttpStatusCode.OK, badgeList)
-            }
-
             route("/{badgeId}") {
                 get {
                     val badgeId = UUID.fromString(call.parameters["badgeId"]!!)
@@ -103,20 +98,26 @@ fun Route.badge(context: DSLContext) {
                 }
             }
 
-            route("/completedByUser/{profileId}") {
-                get {
-                    val profileId = UUID.fromString(call.parameters["profileId"]!!)
-                    val badgeList = context
-                        .select()
-                        .from(BADGE)
-                        .join(BADGE_ACHIEVEMENT)
-                        .on(BADGE.ID.eq(BADGE_ACHIEVEMENT.BADGEID))
-                        .where(BADGE_ACHIEVEMENT.PROFILEID.eq(profileId))
-                        .fetch()
-                        .into(BADGE)
-                        .map { badgeRecord -> badgeRecord.toDto() }
-                    call.respond(HttpStatusCode.OK, badgeList)
-                }
+
+        }
+
+        get {
+            val badgeList = context.fetch(BADGE).toList().map { badgeRecord -> badgeRecord.toDto() }
+            call.respond(HttpStatusCode.OK, badgeList)
+        }
+        route("/completedByUser/{profileId}") {
+            get {
+                val profileId = UUID.fromString(call.parameters["profileId"]!!)
+                val badgeList = context
+                    .select()
+                    .from(BADGE)
+                    .join(BADGE_ACHIEVEMENT)
+                    .on(BADGE.ID.eq(BADGE_ACHIEVEMENT.BADGEID))
+                    .where(BADGE_ACHIEVEMENT.PROFILEID.eq(profileId))
+                    .fetch()
+                    .into(BADGE)
+                    .map { badgeRecord -> badgeRecord.toDto() }
+                call.respond(HttpStatusCode.OK, badgeList)
             }
         }
     }
