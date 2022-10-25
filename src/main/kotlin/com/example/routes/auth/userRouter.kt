@@ -6,6 +6,7 @@ import com.example.plugins.toJsonB
 import com.example.routes.auth.github.client.PartialProfileDto
 import com.wehuddle.db.enums.EventType
 import com.wehuddle.db.tables.FeedEvent.FEED_EVENT
+import com.wehuddle.db.enums.UserRole
 import com.wehuddle.db.tables.Profile
 import com.wehuddle.db.tables.UserFollower.USER_FOLLOWER
 import io.ktor.http.HttpStatusCode
@@ -32,7 +33,6 @@ fun Route.user(context: DSLContext) {
                 val userPrinciple = call.principal<UserPrinciple>()!!
                 call.respond(HttpStatusCode.OK, userPrinciple.profile.toDto())
             }
-
             get("/feed-events") {
                 val userPrinciple = call.principal<UserPrinciple>()!!
                 val followerIdList = context.fetch(
@@ -60,8 +60,10 @@ fun Route.user(context: DSLContext) {
                         return@post
                     }
                     val existingFollowRecord = context.fetchOne(
-                        USER_FOLLOWER.where(USER_FOLLOWER.PROFILEID.eq(userPrinciple.profileId)
-                            .and(USER_FOLLOWER.FOLLOWS.eq(toFollowProfile.id)))
+                        USER_FOLLOWER.where(
+                            USER_FOLLOWER.PROFILEID.eq(userPrinciple.profileId)
+                                .and(USER_FOLLOWER.FOLLOWS.eq(toFollowProfile.id))
+                        )
                     )
                     if (existingFollowRecord != null) {
                         call.respond(HttpStatusCode.BadRequest, "Invalid follower id")
@@ -87,14 +89,37 @@ fun Route.user(context: DSLContext) {
                     val userPrinciple = call.principal<UserPrinciple>()!!
                     val followedProfileId = UUID.fromString(call.parameters["id"]!!)
                     val existingFollowRecord = context.fetchOne(
-                        USER_FOLLOWER.where(USER_FOLLOWER.PROFILEID.eq(userPrinciple.profileId)
-                                .and(USER_FOLLOWER.FOLLOWS.eq(followedProfileId)))
+                        USER_FOLLOWER.where(
+                            USER_FOLLOWER.PROFILEID.eq(userPrinciple.profileId)
+                                .and(USER_FOLLOWER.FOLLOWS.eq(followedProfileId))
+                        )
                     )
                     if (existingFollowRecord == null) {
                         call.respond(HttpStatusCode.BadRequest, "Invalid follower id")
                         return@post
                     }
                     existingFollowRecord.delete()
+
+                }
+            }
+            get("/allUsers") {
+                val userList = context.fetch(PROFILE).toList().map { ProfileRecord -> ProfileRecord.toDto() }
+                call.respond(HttpStatusCode.OK, userList)
+            }
+            put("updateRole/{id}") {
+                val profileId = UUID.fromString(call.parameters["id"]!!)
+                val userPrinciple = call.principal<UserPrinciple>()!!
+                if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                    context.update(PROFILE)
+                        .set(PROFILE.ROLE, UserRole.HUDDLER)
+                        .where(PROFILE.ID.eq(profileId))
+                        .execute()
+                    call.respond(HttpStatusCode.OK)
+                } else {
+                    context.update(PROFILE)
+                        .set(PROFILE.ROLE, UserRole.HUDDLE_AGENT)
+                        .where(PROFILE.ID.eq(profileId))
+                        .execute()
                     call.respond(HttpStatusCode.OK)
                 }
             }
