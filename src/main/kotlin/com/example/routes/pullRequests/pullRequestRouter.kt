@@ -14,9 +14,7 @@ import java.util.*
 private val PULL_REQUEST = PullRequest.PULL_REQUEST
 
 fun Route.pullRequests(context: DSLContext){
-    authenticate {
         route("/pullRequests/merged/byUser/{profileId}"){
-
             get {
                 val profileId = UUID.fromString(call.parameters["profileId"]!!)
                 val prList = context
@@ -32,5 +30,5 @@ fun Route.pullRequests(context: DSLContext){
                 call.respond(HttpStatusCode.OK, prList)
             }
         }
-    }
+
 }
