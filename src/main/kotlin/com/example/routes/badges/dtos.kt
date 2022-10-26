@@ -12,12 +12,22 @@ import org.jooq.DSLContext
 private val BADGE = Badge.BADGE
 private val TASK = Task.TASK
 
-open class PartialBadgeDto(
+open class EditBadgeDTO(
     val title: String,
     val description: String,
-    val photo: String,
+    val photo: String
+)
+
+open class PartialBadgeDto(
+    title: String,
+    description: String,
+    photo: String,
     val depBadges: List<UUID>,
     val depTasks: List<UUID>,
+): EditBadgeDTO(
+    title,
+    description,
+    photo
 )
 
 open class BadgeDto(
