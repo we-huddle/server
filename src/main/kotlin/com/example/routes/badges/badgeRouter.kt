@@ -4,6 +4,7 @@ import com.example.plugins.UserPrinciple
 import com.example.routes.auth.addFeedEvent
 import com.example.routes.notifications.PartialNotificationDto
 import com.example.routes.notifications.addNotification
+import com.example.routes.sprints.SPRINT
 import com.wehuddle.db.enums.AnswerStatus
 import com.wehuddle.db.enums.EventType
 import com.wehuddle.db.enums.NotificationType
@@ -92,6 +93,23 @@ fun Route.badge(context: DSLContext) {
                             .set(BADGE.UPDATED_AT, OffsetDateTime.now())
                             .where(BADGE.ID.eq(badgeId))
                             .execute()
+                        call.respond(HttpStatusCode.OK)
+                    } else {
+                        call.respond(HttpStatusCode.Forbidden, "Permission denied")
+                    }
+                }
+
+                delete {
+                    val badgeId = UUID.fromString(call.parameters["badgeId"]!!)
+                    val existingBadge = context.fetchOne(
+                        BADGE.where(BADGE.ID.eq(badgeId))
+                    )
+                    if (existingBadge == null) {
+                        call.respond(HttpStatusCode.BadRequest, "Invalid badge id")
+                    }
+                    val userPrinciple = call.principal<UserPrinciple>()!!
+                    if(userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                        context.deleteFrom(BADGE).where(BADGE.ID.eq(badgeId)).execute()
                         call.respond(HttpStatusCode.OK)
                     } else {
                         call.respond(HttpStatusCode.Forbidden, "Permission denied")
