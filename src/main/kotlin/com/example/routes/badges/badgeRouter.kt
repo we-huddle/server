@@ -4,7 +4,6 @@ import com.example.plugins.UserPrinciple
 import com.example.routes.auth.addFeedEvent
 import com.example.routes.notifications.PartialNotificationDto
 import com.example.routes.notifications.addNotification
-import com.example.routes.sprints.SPRINT
 import com.wehuddle.db.enums.AnswerStatus
 import com.wehuddle.db.enums.EventType
 import com.wehuddle.db.enums.NotificationType
