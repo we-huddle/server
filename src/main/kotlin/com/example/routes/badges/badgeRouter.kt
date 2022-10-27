@@ -97,6 +97,23 @@ fun Route.badge(context: DSLContext) {
                         call.respond(HttpStatusCode.Forbidden, "Permission denied")
                     }
                 }
+
+                delete {
+                    val badgeId = UUID.fromString(call.parameters["badgeId"]!!)
+                    val existingBadge = context.fetchOne(
+                        BADGE.where(BADGE.ID.eq(badgeId))
+                    )
+                    if (existingBadge == null) {
+                        call.respond(HttpStatusCode.BadRequest, "Invalid badge id")
+                    }
+                    val userPrinciple = call.principal<UserPrinciple>()!!
+                    if(userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                        context.deleteFrom(BADGE).where(BADGE.ID.eq(badgeId)).execute()
+                        call.respond(HttpStatusCode.OK)
+                    } else {
+                        call.respond(HttpStatusCode.Forbidden, "Permission denied")
+                    }
+                }
             }
 
             route("/completed") {
