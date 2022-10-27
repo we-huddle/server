@@ -106,22 +106,21 @@ fun Route.user(context: DSLContext) {
                 val userList = context.fetch(PROFILE).toList().map { ProfileRecord -> ProfileRecord.toDto() }
                 call.respond(HttpStatusCode.OK, userList)
             }
-            put("updateRole/{id}") {
+            put("updateRole/revokeAgent/{id}"){
                 val profileId = UUID.fromString(call.parameters["id"]!!)
-                val userPrinciple = call.principal<UserPrinciple>()!!
-                if (userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
-                    context.update(PROFILE)
-                        .set(PROFILE.ROLE, UserRole.HUDDLER)
-                        .where(PROFILE.ID.eq(profileId))
-                        .execute()
-                    call.respond(HttpStatusCode.OK)
-                } else {
-                    context.update(PROFILE)
-                        .set(PROFILE.ROLE, UserRole.HUDDLE_AGENT)
-                        .where(PROFILE.ID.eq(profileId))
-                        .execute()
-                    call.respond(HttpStatusCode.OK)
-                }
+                context.update(PROFILE)
+                    .set(PROFILE.ROLE, UserRole.HUDDLER)
+                    .where(PROFILE.ID.eq(profileId))
+                    .execute()
+                call.respond(HttpStatusCode.OK)
+            }
+            put("updateRole/grantAgent/{id}"){
+                val profileId = UUID.fromString(call.parameters["id"]!!)
+                context.update(PROFILE)
+                    .set(PROFILE.ROLE, UserRole.HUDDLE_AGENT)
+                    .where(PROFILE.ID.eq(profileId))
+                    .execute()
+                call.respond(HttpStatusCode.OK)
             }
         }
     }
