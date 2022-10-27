@@ -108,6 +108,7 @@ fun Route.badge(context: DSLContext) {
                     }
                     val userPrinciple = call.principal<UserPrinciple>()!!
                     if(userPrinciple.profile.role == UserRole.HUDDLE_AGENT) {
+                        context.deleteFrom(BADGE_ACHIEVEMENT).where(BADGE_ACHIEVEMENT.BADGEID.eq(badgeId)).execute()
                         context.deleteFrom(BADGE).where(BADGE.ID.eq(badgeId)).execute()
                         call.respond(HttpStatusCode.OK)
                     } else {
