@@ -1,11 +1,15 @@
 package com.example.routes.sprints
 
 import com.example.plugins.UserPrinciple
+import com.example.routes.mailSender.EmailDto
+import com.example.routes.mailSender.SmtpMailClient
+import com.example.routes.tasks.DevTaskDetails
+import com.example.routes.tasks.QuizAnswerPayload
+import com.example.routes.tasks.toDto
 import com.wehuddle.db.enums.IssueState
+import com.wehuddle.db.enums.TaskType
 import com.wehuddle.db.enums.UserRole
-import com.wehuddle.db.tables.Issue
-import com.wehuddle.db.tables.Sprint
-import com.wehuddle.db.tables.SprintIssue
+import com.wehuddle.db.tables.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.auth.authenticate
@@ -19,8 +23,10 @@ import org.jooq.DSLContext
 
 private val SPRINT = Sprint.SPRINT
 private val ISSUE = Issue.ISSUE
+private val PROFILE = Profile.PROFILE
+private val ISSUE_ASSIGNMENT = IssueAssignment.ISSUE_ASSIGNMENT
 
-fun Route.sprints(context: DSLContext) {
+fun Route.sprints(context: DSLContext, mailClient: SmtpMailClient) {
     authenticate {
         route("/sprints") {
             post {
@@ -54,6 +60,44 @@ fun Route.sprints(context: DSLContext) {
             }
 
             route("/{sprintId}") {
+                route("/send-reminder") {
+                    post {
+                        val userPrinciple = call.principal<UserPrinciple>()!!
+                        if (userPrinciple.profile.role != UserRole.HUDDLE_AGENT) {
+                            call.respond(HttpStatusCode.Forbidden)
+                            return@post
+                        }
+
+//                        val answerList = context.fetch(
+//                            ANSWER.where(ANSWER.TASKID.eq(taskId).and(ANSWER.PROFILEID.eq(profile.profileId)))
+//                        ).toList().map { answerRecord ->
+//                            when (existingTask.type) {
+//                                TaskType.DEV -> answerRecord.toDto<DevTaskDetails>()
+//                                TaskType.QUIZ -> answerRecord.toDto<QuizAnswerPayload>()
+//                                else -> throw Exception()
+//                            }
+//                        }
+
+                        val sprint = call.receive<SprintDto>()
+//                        val emailAddresses = listOf<String>()
+                        val emailAddresses = context
+                            .select(PROFILE.EMAIL)
+                            .from(PROFILE)
+                            .join(ISSUE_ASSIGNMENT)
+                            .on(PROFILE.ID.eq(ISSUE_ASSIGNMENT.PROFILE_ID))
+                            .join(SPRINT)
+                            .on(ISSUE.ID.eq(sprint.id))
+                            .fetch
+
+
+//                        val emailAddresses = listOf<String>("pasindur2@gmail.com", "pasindur2pj@gmail.com", "pasindur2pj2@gmail.com" )
+//                        emailAddresses.forEach(){ email ->
+//                            val emailToSend = EmailDto(sprint.title, email, sprint.description, OffsetDateTime.now())
+//                            mailClient.sendEmail(emailToSend)
+//                        }
+                    }
+                }
+
                 get {
                     val sprintId = UUID.fromString(call.parameters["sprintId"]!!)
                     val existingSprint = context.fetchOne(

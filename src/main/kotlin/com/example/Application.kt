@@ -7,6 +7,7 @@ import com.example.plugins.configureHikariDataSource
 import com.example.plugins.configureRouting
 import com.example.plugins.configureSecurity
 import com.example.plugins.performDBMigration
+import com.example.routes.mailSender.SmtpMailClient
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.http.ContentType
@@ -24,6 +25,10 @@ const val ENV_GITHUB_CLIENT_ID = "GITHUB_CLIENT_ID"
 const val ENV_GITHUB_CLIENT_SECRET = "GITHUB_CLIENT_SECRET"
 const val ENV_CLIENT_URL = "CLIENT_URL"
 const val ENV_DATA_BUCKET_NAME = "DATA_BUCKET_NAME"
+const val ENV_EMAIL = "EMAIL"
+const val ENV_EMAIL_PASSWORD = "EMAIL_PASSWORD"
+const val ENV_EMAIL_HOST = "EMAIL_HOST"
+const val ENV_EMAIL_PORT = "EMAIL_PORT"
 
 fun configureGithubClient(
     clientId: String = System.getenv(ENV_GITHUB_CLIENT_ID),
@@ -43,6 +48,10 @@ fun main() {
         val context = DSL.using(datasource, SQLDialect.POSTGRES)
         val clientUrl = System.getenv(ENV_CLIENT_URL)
         val dataBucketName = System.getenv(ENV_DATA_BUCKET_NAME)
+        val smtpEmail = System.getenv(ENV_EMAIL)
+        val smtpPassword = System.getenv(ENV_EMAIL_PASSWORD)
+        val smtpHost = System.getenv(ENV_EMAIL_HOST)
+        val smtpPort = System.getenv(ENV_EMAIL_PORT).toInt()
         performDBMigration(datasource)
 
         configureSecurity(context)
@@ -51,7 +60,8 @@ fun main() {
             context,
             configureGithubClient(),
             clientUrl,
-            dataBucketName
+            dataBucketName,
+            SmtpMailClient(smtpHost,smtpPort,smtpEmail,smtpPassword)
         )
 
         install(ContentNegotiation) {
