@@ -7,6 +7,8 @@ import com.example.routes.badges.badge
 import com.example.routes.dataBucket.dataBucket
 import com.example.routes.githubEvents.githubEvents
 import com.example.routes.leaderboard.leaderboard
+import com.example.routes.mailSender.MailClient
+import com.example.routes.mailSender.SmtpMailClient
 import com.example.routes.pullRequests.pullRequests
 import com.example.routes.session.session
 import com.example.routes.sprints.sprints
@@ -69,7 +71,8 @@ fun Application.configureRouting(
     context: DSLContext? = null,
     githubClient: GithubClient? = null,
     clientUrl: String? = null,
-    dataBucketName: String? = null
+    dataBucketName: String? = null,
+    mailClient: SmtpMailClient? = null
 ) {
     routing {
         oidc(context!!, githubClient!!, clientUrl!!)
@@ -77,7 +80,7 @@ fun Application.configureRouting(
         user(context)
         githubEvents(context)
         tasks(context)
-        sprints(context)
+        sprints(context, mailClient!!)
         leaderboard(context)
         badge(context)
         dataBucket(dataBucketName!!)
