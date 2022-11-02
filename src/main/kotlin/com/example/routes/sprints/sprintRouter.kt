@@ -1,5 +1,6 @@
 package com.example.routes.sprints
 
+import aws.smithy.kotlin.runtime.http.response.dumpResponse
 import com.example.plugins.UserPrinciple
 import com.example.routes.mailSender.EmailDto
 import com.example.routes.mailSender.SmtpMailClient
@@ -25,6 +26,7 @@ private val SPRINT = Sprint.SPRINT
 private val ISSUE = Issue.ISSUE
 private val PROFILE = Profile.PROFILE
 private val ISSUE_ASSIGNMENT = IssueAssignment.ISSUE_ASSIGNMENT
+private val SPRINT_ISSUE = SprintIssue.SPRINT_ISSUE
 
 fun Route.sprints(context: DSLContext, mailClient: SmtpMailClient) {
     authenticate {
@@ -68,33 +70,21 @@ fun Route.sprints(context: DSLContext, mailClient: SmtpMailClient) {
                             return@post
                         }
 
-//                        val answerList = context.fetch(
-//                            ANSWER.where(ANSWER.TASKID.eq(taskId).and(ANSWER.PROFILEID.eq(profile.profileId)))
-//                        ).toList().map { answerRecord ->
-//                            when (existingTask.type) {
-//                                TaskType.DEV -> answerRecord.toDto<DevTaskDetails>()
-//                                TaskType.QUIZ -> answerRecord.toDto<QuizAnswerPayload>()
-//                                else -> throw Exception()
-//                            }
-//                        }
-
                         val sprint = call.receive<SprintDto>()
-//                        val emailAddresses = listOf<String>()
                         val emailAddresses = context
                             .select(PROFILE.EMAIL)
                             .from(PROFILE)
                             .join(ISSUE_ASSIGNMENT)
                             .on(PROFILE.ID.eq(ISSUE_ASSIGNMENT.PROFILE_ID))
-                            .join(SPRINT)
-                            .on(ISSUE.ID.eq(sprint.id))
-                            .fetch
-
-
-//                        val emailAddresses = listOf<String>("pasindur2@gmail.com", "pasindur2pj@gmail.com", "pasindur2pj2@gmail.com" )
-//                        emailAddresses.forEach(){ email ->
-//                            val emailToSend = EmailDto(sprint.title, email, sprint.description, OffsetDateTime.now())
-//                            mailClient.sendEmail(emailToSend)
-//                        }
+                            .join(SPRINT_ISSUE)
+                            .on(SPRINT_ISSUE.SPRINT_ID.eq(sprint.id))
+                            .fetch(PROFILE.EMAIL)
+                            .toList()
+                        println(emailAddresses)
+                        emailAddresses.forEach(){ email ->
+                            val emailToSend = EmailDto(sprint.title, email, sprint.description, OffsetDateTime.now())
+                            mailClient.sendEmail(emailToSend)
+                        }
                     }
                 }
 
