@@ -15,5 +15,6 @@ fun Application.configureHTTP() {
         allowNonSimpleContentTypes = true
         allowHost("localhost:3000", schemes = listOf("http", "https"))
         allowHost("elegant-jalebi-354786.netlify.app", schemes = listOf("http", "https"))
+        allowHost("wehuddle.sefglobal.org", schemes = listOf("http", "https"))
     }
 }
