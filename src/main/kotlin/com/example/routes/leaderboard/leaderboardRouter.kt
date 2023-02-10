@@ -53,6 +53,8 @@ fun Route.leaderboard(context: DSLContext) {
                 leaderboardRecords.add(LeaderboardRecord(points, githubUser))
             }
             leaderboardRecords.sortByDescending { leaderboardRecord -> leaderboardRecord.points }
+            val response = call.response
+            response.addHeader("Access-Control-Allow-Origin", "wehuddle.sefglobal.org")
             call.respond(HttpStatusCode.OK, leaderboardRecords)
         }
     }
